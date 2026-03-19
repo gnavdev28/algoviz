@@ -65,5 +65,5 @@ export function* quickSort(initialArray) {
     
     // Gán cờ hoàn thành toàn bộ mảng
     sortedIndices = arr.map((_, idx) => idx);
-    yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: [], sortedIndices, pseudoLine: 11, isFinished: true };
+    yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: [], sortedIndices, pseudoLine: 11, pseudoLineStatus: 'success', isFinished: true };
 }

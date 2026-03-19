@@ -8,4 +8,88 @@
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     transition-duration: 300ms;
   }
+
+  /* ─── Dark Mode: Custom Scrollbar ─── */
+  .dark ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .dark ::-webkit-scrollbar-track {
+    background: rgb(17 24 39); /* gray-900 */
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    background: rgb(55 65 81); /* gray-700 */
+    border-radius: 3px;
+  }
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: rgb(75 85 99); /* gray-600 */
+  }
+  .dark ::-webkit-scrollbar-corner {
+    background: rgb(17 24 39);
+  }
+
+  /* Firefox scrollbar */
+  .dark * {
+    scrollbar-color: rgb(55 65 81) rgb(17 24 39);
+    scrollbar-width: thin;
+  }
+
+  /* ─── Dark Mode: Number Input Spinners ─── */
+  .dark input[type="number"]::-webkit-inner-spin-button,
+  .dark input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+  }
+  .dark input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  /* ─── Dark Mode: Range slider ─── */
+  .dark input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    cursor: pointer;
+  }
+  .dark input[type="range"]::-webkit-slider-runnable-track {
+    height: 6px;
+    background: rgb(55 65 81);
+    border-radius: 3px;
+  }
+  .dark input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: rgb(99 102 241); /* indigo-500 */
+    border-radius: 50%;
+    border: 2px solid rgb(17 24 39);
+    margin-top: -6px;
+    box-shadow: 0 0 6px rgba(99, 102, 241, 0.4);
+  }
+  .dark input[type="range"]::-moz-range-track {
+    height: 6px;
+    background: rgb(55 65 81);
+    border-radius: 3px;
+  }
+  .dark input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: rgb(99 102 241);
+    border-radius: 50%;
+    border: 2px solid rgb(17 24 39);
+    box-shadow: 0 0 6px rgba(99, 102, 241, 0.4);
+  }
+
+  /* ─── Dark Mode: Select dropdown arrow ─── */
+  .dark select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%239ca3af'%3e%3cpath d='M4.22 6.22a.75.75 0 011.06 0L8 8.94l2.72-2.72a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L4.22 7.28a.75.75 0 010-1.06z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 1.5em 1.5em;
+    -webkit-appearance: none;
+    appearance: none;
+    padding-right: 2.5rem;
+  }
 }

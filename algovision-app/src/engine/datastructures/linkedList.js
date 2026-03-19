@@ -37,9 +37,6 @@ export function calcInsertIndex(insertPos, insertIdx, listLength) {
  * @yields {object} step - { type, ...data }
  */
 export function* linkedListInsert(nodes, newNode, targetIdx) {
-  // Bước 0: Hiện node mới ở khu vực standby
-  yield { type: 'SHOW_NEW_NODE', node: newNode };
-
   // Duyệt tìm vị trí chèn (highlight từng node)
   for (let i = 0; i < targetIdx; i++) {
     yield { type: 'HIGHLIGHT', activeId: nodes[i].id };
@@ -49,8 +46,8 @@ export function* linkedListInsert(nodes, newNode, targetIdx) {
   const prevNodeId = targetIdx > 0 ? nodes[targetIdx - 1].id : 'HEAD';
   yield { type: 'HIGHLIGHT', activeId: prevNodeId };
 
-  // Bước 1: Bay lên vị trí khe hở (fly-up)
-  yield { type: 'FLY_UP', node: { ...newNode, targetIdx } };
+  // Bước 1: Popup node mới tại vị trí chèn (inline giữa prev và next)
+  yield { type: 'POPUP_NODE', node: { ...newNode, targetIdx } };
 
   // Bước 2: Nối mũi tên từ New Node sang Next Node (mũi tên xanh)
   yield { type: 'CONNECT_NEXT' };

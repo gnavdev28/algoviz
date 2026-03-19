@@ -25,8 +25,8 @@ export function* mergeSort(initialArray) {
             return res;
         };
 
-        // Đẩy trồi lên
-        yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: getAux(), sortedIndices, pseudoLine: 0, isFinished: false };
+        // Tách thành L[] và R[]
+        yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: getAux(), sortedIndices, pseudoLine: 6, isFinished: false };
 
         while (i < n1 && j < n2) {
             let idL = L[i].id;
@@ -34,7 +34,8 @@ export function* mergeSort(initialArray) {
             let posL = arr.findIndex(x => x.id === idL);
             let posR = arr.findIndex(x => x.id === idR);
 
-            yield { array: [...arr], activeIndices: [posL, posR], swapIndices: [], auxIndices: getAux(), sortedIndices, pseudoLine: 0, isFinished: false };
+            // So sánh L[i] vs R[j]
+            yield { array: [...arr], activeIndices: [posL, posR], swapIndices: [], auxIndices: getAux(), sortedIndices, pseudoLine: 7, isFinished: false };
             
             let chosenId = null;
             if (L[i].val <= R[j].val) {
@@ -47,7 +48,7 @@ export function* mergeSort(initialArray) {
 
             let currentPos = arr.findIndex(x => x.id === chosenId);
             // Highlight đỏ phần tử chuẩn bị rớt xuống
-            yield { array: [...arr], activeIndices: [], swapIndices: [currentPos], auxIndices: getAux(), sortedIndices, pseudoLine: 0, isFinished: false };
+            yield { array: [...arr], activeIndices: [], swapIndices: [currentPos], auxIndices: getAux(), sortedIndices, pseudoLine: 8, isFinished: false };
             
             let element = arr[currentPos];
             for(let p = currentPos; p > k; p--) {
@@ -55,8 +56,8 @@ export function* mergeSort(initialArray) {
             }
             arr[k] = element; 
 
-            // Rớt xuống mảng chính, không còn trong aux
-            yield { array: [...arr], activeIndices: [], swapIndices: [k], auxIndices: getAux(), sortedIndices, pseudoLine: 0, isFinished: false };
+            // Gộp phần tử vào A[k]
+            yield { array: [...arr], activeIndices: [], swapIndices: [k], auxIndices: getAux(), sortedIndices, pseudoLine: 8, isFinished: false };
             k++;
         }
 
@@ -64,14 +65,14 @@ export function* mergeSort(initialArray) {
             let chosenId = L[i].id;
             let currentPos = arr.findIndex(x => x.id === chosenId);
             
-            yield { array: [...arr], activeIndices: [currentPos], swapIndices: [], auxIndices: getAux(), sortedIndices, pseudoLine: 0, isFinished: false };
-            yield { array: [...arr], activeIndices: [], swapIndices: [currentPos], auxIndices: getAux(), sortedIndices, pseudoLine: 0, isFinished: false };
+            yield { array: [...arr], activeIndices: [currentPos], swapIndices: [], auxIndices: getAux(), sortedIndices, pseudoLine: 7, isFinished: false };
+            yield { array: [...arr], activeIndices: [], swapIndices: [currentPos], auxIndices: getAux(), sortedIndices, pseudoLine: 8, isFinished: false };
             
             let element = arr[currentPos];
             for(let p = currentPos; p > k; p--) arr[p] = arr[p - 1];
             arr[k] = element;
             
-            yield { array: [...arr], activeIndices: [], swapIndices: [k], auxIndices: getAux(), sortedIndices, pseudoLine: 0, isFinished: false };
+            yield { array: [...arr], activeIndices: [], swapIndices: [k], auxIndices: getAux(), sortedIndices, pseudoLine: 8, isFinished: false };
             i++; k++;
         }
         
@@ -79,14 +80,14 @@ export function* mergeSort(initialArray) {
             let chosenId = R[j].id;
             let currentPos = arr.findIndex(x => x.id === chosenId);
             
-            yield { array: [...arr], activeIndices: [currentPos], swapIndices: [], auxIndices: getAux(), sortedIndices, pseudoLine: 0, isFinished: false };
-            yield { array: [...arr], activeIndices: [], swapIndices: [currentPos], auxIndices: getAux(), sortedIndices, pseudoLine: 0, isFinished: false };
+            yield { array: [...arr], activeIndices: [currentPos], swapIndices: [], auxIndices: getAux(), sortedIndices, pseudoLine: 7, isFinished: false };
+            yield { array: [...arr], activeIndices: [], swapIndices: [currentPos], auxIndices: getAux(), sortedIndices, pseudoLine: 8, isFinished: false };
             
             let element = arr[currentPos];
             for(let p = currentPos; p > k; p--) arr[p] = arr[p - 1];
             arr[k] = element;
             
-            yield { array: [...arr], activeIndices: [], swapIndices: [k], auxIndices: getAux(), sortedIndices, pseudoLine: 0, isFinished: false };
+            yield { array: [...arr], activeIndices: [], swapIndices: [k], auxIndices: getAux(), sortedIndices, pseudoLine: 8, isFinished: false };
             j++; k++;
         }
     }
@@ -94,13 +95,18 @@ export function* mergeSort(initialArray) {
     function* doMergeSort(l, r) {
         if (l >= r) return;
         let m = l + Math.floor((r - l) / 2);
+        // Chia đôi mảng
+        yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: [], sortedIndices, pseudoLine: 2, isFinished: false };
         yield* doMergeSort(l, m);
+        yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: [], sortedIndices, pseudoLine: 3, isFinished: false };
         yield* doMergeSort(m + 1, r);
+        yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: [], sortedIndices, pseudoLine: 4, isFinished: false };
         yield* mergeHelper(l, m, r);
     }
 
+    yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: [], sortedIndices, pseudoLine: 1, isFinished: false };
     yield* doMergeSort(0, arr.length - 1);
     
     sortedIndices = arr.map((_, i) => i);
-    yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: [], sortedIndices, pseudoLine: 0, isFinished: true };
+    yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: [], sortedIndices, pseudoLine: 9, pseudoLineStatus: 'success', isFinished: true };
 }

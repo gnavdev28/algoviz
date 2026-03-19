@@ -9,6 +9,7 @@ export const useAlgorithm = (generatorFn, initialArray, extraArgs = {}) => {
     sortedIndices: [],
     foundIndex: -1,
     pseudoLine: 0,
+    pseudoLineStatus: 'active',
     isFinished: false
   });
   const [isPlaying, setIsPlaying] = useState(false);
@@ -62,6 +63,7 @@ export const useAlgorithm = (generatorFn, initialArray, extraArgs = {}) => {
           sortedIndices: value.sortedIndices || [],
           foundIndex: value.foundIndex !== undefined ? value.foundIndex : -1,
           pseudoLine: value.pseudoLine || 0,
+          pseudoLineStatus: value.pseudoLineStatus || 'active',
           isFinished: value.isFinished || done
         });
         if (value.isFinished || done) {

@@ -23,5 +23,5 @@ export function* bubbleSort(array) {
   }
   
   // Finish state
-  yield { array: [...arr], activeIndices: [], swapIndices: [], sortedIndices: Array.from({length: n}, (_, k) => k), pseudoLine: 5, isFinished: true };
+  yield { array: [...arr], activeIndices: [], swapIndices: [], sortedIndices: Array.from({length: n}, (_, k) => k), pseudoLine: 5, pseudoLineStatus: 'success', isFinished: true };
 }
