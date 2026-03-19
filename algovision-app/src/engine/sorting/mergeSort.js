@@ -28,13 +28,14 @@ export function* mergeSort(initialArray) {
         // Tách thành L[] và R[]
         yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: getAux(), sortedIndices, pseudoLine: 6, isFinished: false };
 
+        // Comparison and Merge
         while (i < n1 && j < n2) {
             let idL = L[i].id;
             let idR = R[j].id;
             let posL = arr.findIndex(x => x.id === idL);
             let posR = arr.findIndex(x => x.id === idR);
 
-            // So sánh L[i] vs R[j]
+            // Compare
             yield { array: [...arr], activeIndices: [posL, posR], swapIndices: [], auxIndices: getAux(), sortedIndices, pseudoLine: 7, isFinished: false };
             
             let chosenId = null;
@@ -47,16 +48,11 @@ export function* mergeSort(initialArray) {
             }
 
             let currentPos = arr.findIndex(x => x.id === chosenId);
-            // Highlight đỏ phần tử chuẩn bị rớt xuống
-            yield { array: [...arr], activeIndices: [], swapIndices: [currentPos], auxIndices: getAux(), sortedIndices, pseudoLine: 8, isFinished: false };
-            
             let element = arr[currentPos];
-            for(let p = currentPos; p > k; p--) {
-                arr[p] = arr[p - 1]; 
-            }
+            for(let p = currentPos; p > k; p--) arr[p] = arr[p - 1]; 
             arr[k] = element; 
 
-            // Gộp phần tử vào A[k]
+            // After move
             yield { array: [...arr], activeIndices: [], swapIndices: [k], auxIndices: getAux(), sortedIndices, pseudoLine: 8, isFinished: false };
             k++;
         }
@@ -64,10 +60,6 @@ export function* mergeSort(initialArray) {
         while (i < n1) {
             let chosenId = L[i].id;
             let currentPos = arr.findIndex(x => x.id === chosenId);
-            
-            yield { array: [...arr], activeIndices: [currentPos], swapIndices: [], auxIndices: getAux(), sortedIndices, pseudoLine: 7, isFinished: false };
-            yield { array: [...arr], activeIndices: [], swapIndices: [currentPos], auxIndices: getAux(), sortedIndices, pseudoLine: 8, isFinished: false };
-            
             let element = arr[currentPos];
             for(let p = currentPos; p > k; p--) arr[p] = arr[p - 1];
             arr[k] = element;
@@ -79,10 +71,6 @@ export function* mergeSort(initialArray) {
         while (j < n2) {
             let chosenId = R[j].id;
             let currentPos = arr.findIndex(x => x.id === chosenId);
-            
-            yield { array: [...arr], activeIndices: [currentPos], swapIndices: [], auxIndices: getAux(), sortedIndices, pseudoLine: 7, isFinished: false };
-            yield { array: [...arr], activeIndices: [], swapIndices: [currentPos], auxIndices: getAux(), sortedIndices, pseudoLine: 8, isFinished: false };
-            
             let element = arr[currentPos];
             for(let p = currentPos; p > k; p--) arr[p] = arr[p - 1];
             arr[k] = element;
@@ -95,16 +83,11 @@ export function* mergeSort(initialArray) {
     function* doMergeSort(l, r) {
         if (l >= r) return;
         let m = l + Math.floor((r - l) / 2);
-        // Chia đôi mảng
-        yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: [], sortedIndices, pseudoLine: 2, isFinished: false };
         yield* doMergeSort(l, m);
-        yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: [], sortedIndices, pseudoLine: 3, isFinished: false };
         yield* doMergeSort(m + 1, r);
-        yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: [], sortedIndices, pseudoLine: 4, isFinished: false };
         yield* mergeHelper(l, m, r);
     }
 
-    yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: [], sortedIndices, pseudoLine: 1, isFinished: false };
     yield* doMergeSort(0, arr.length - 1);
     
     sortedIndices = arr.map((_, i) => i);

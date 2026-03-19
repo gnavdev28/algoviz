@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Workspace from './pages/Workspace';
+import Battle from './pages/Battle';
 import { useTheme } from './hooks/useTheme';
 
 function App() {
@@ -12,7 +13,8 @@ function App() {
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-950 text-black dark:text-white font-sans transition-colors duration-300">
       <Navbar currentPage={currentPage} onNavigate={setCurrentPage} isDark={isDark} toggleTheme={toggleTheme} />
       <main className="flex-1 overflow-hidden flex flex-col relative">
-        {currentPage === 'home' ? <Home onNavigate={setCurrentPage} /> : <Workspace />}
+        {currentPage === 'home' ? <Home onNavigate={setCurrentPage} /> : 
+         currentPage === 'battle' ? <Battle /> : <Workspace />}
       </main>
     </div>
   );

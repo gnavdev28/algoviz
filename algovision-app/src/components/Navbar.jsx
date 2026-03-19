@@ -18,6 +18,13 @@ const Navbar = ({ currentPage, onNavigate, isDark, toggleTheme }) => {
           KHÔNG GIAN HỌC
         </button>
 
+        <button 
+          onClick={() => onNavigate('battle')}
+          className={`transition-all hover:opacity-50 ${currentPage === 'battle' ? 'underline decoration-4 underline-offset-8' : ''}`}
+        >
+          BATTLE MODE
+        </button>
+
         <button
           onClick={toggleTheme}
           className="w-10 h-10 flex items-center justify-center border-3 border-black dark:border-gray-500 bg-slate-100 dark:bg-gray-800 hover:shadow-[3px_3px_0_0_#000] dark:hover:shadow-[3px_3px_0_0_rgba(255,255,255,0.2)] hover:-translate-y-0.5 transition-all rounded-sm"
