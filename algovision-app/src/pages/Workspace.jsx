@@ -58,11 +58,6 @@ const Workspace = () => {
   const isSearching = ['linear', 'binary'].includes(algoType);
   const isLinkedList = algoType === 'linkedlist';
 
-  const handleRandomize = () => {
-    setBaseArray(generateRandomArray(15));
-    setCustomInput('');
-  };
-
   const handleApplyCustom = () => {
     let size = parseInt(customInput);
     if (isNaN(size) || size <= 0) {

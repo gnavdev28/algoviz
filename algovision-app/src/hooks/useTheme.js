@@ -7,7 +7,9 @@ export const useTheme = () => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved !== null) return saved === 'dark';
-    } catch {}
+    } catch {
+      // Ignore localStorage errors
+    }
     // Fallback: kiểm tra preference hệ thống
     return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
   });
@@ -21,7 +23,9 @@ export const useTheme = () => {
     }
     try {
       localStorage.setItem(STORAGE_KEY, isDark ? 'dark' : 'light');
-    } catch {}
+    } catch {
+      // Ignore localStorage errors
+    }
   }, [isDark]);
 
   const toggleTheme = () => setIsDark(prev => !prev);

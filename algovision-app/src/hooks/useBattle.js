@@ -42,22 +42,40 @@ export const useBattle = (gen1Fn, gen2Fn, initialArray, extraArgs1 = {}, extraAr
     if (timer2Ref.current) clearInterval(timer2Ref.current);
   }, [gen1Fn, gen2Fn, extraArgs1, extraArgs2]);
 
+  // Sync state when initialArray changes
+  const [prevInitialArray, setPrevInitialArray] = useState(initialArray);
+  if (initialArray !== prevInitialArray) {
+    setPrevInitialArray(initialArray);
+    setArray1([...initialArray]);
+    setArray2([...initialArray]);
+    const newState = createInitialState();
+    setState1(newState);
+    setState2(newState);
+    setIsPlaying(false);
+  }
+
+  // Update refs in effect
   useEffect(() => {
-    init(initialArray);
-  }, [initialArray, init]);
+    gen1Ref.current = gen1Fn([...initialArray], extraArgs1);
+    gen2Ref.current = gen2Fn([...initialArray], extraArgs2);
+  }, [initialArray, gen1Fn, gen2Fn, extraArgs1, extraArgs2]);
 
   const step1 = useCallback(() => {
     if (gen1Ref.current && !state1.isFinished) {
       const { value, done } = gen1Ref.current.next();
       if (value) {
         setArray1(value.array);
-        setState1(prev => ({
-          ...value,
-          startTime: prev.startTime || Date.now(),
-          endTime: (value.isFinished || done) ? Date.now() : null,
-          totalTime: (value.isFinished || done) ? (Date.now() - (prev.startTime || Date.now())) : 0,
-          isFinished: value.isFinished || done
-        }));
+        setState1(prev => {
+          const now = Date.now();
+          const start = prev.startTime || now;
+          return {
+            ...value,
+            startTime: start,
+            endTime: (value.isFinished || done) ? now : null,
+            totalTime: now - start,
+            isFinished: value.isFinished || done
+          };
+        });
       }
     }
   }, [state1.isFinished]);
@@ -67,13 +85,17 @@ export const useBattle = (gen1Fn, gen2Fn, initialArray, extraArgs1 = {}, extraAr
       const { value, done } = gen2Ref.current.next();
       if (value) {
         setArray2(value.array);
-        setState2(prev => ({
-          ...value,
-          startTime: prev.startTime || Date.now(),
-          endTime: (value.isFinished || done) ? Date.now() : null,
-          totalTime: (value.isFinished || done) ? (Date.now() - (prev.startTime || Date.now())) : 0,
-          isFinished: value.isFinished || done
-        }));
+        setState2(prev => {
+          const now = Date.now();
+          const start = prev.startTime || now;
+          return {
+            ...value,
+            startTime: start,
+            endTime: (value.isFinished || done) ? now : null,
+            totalTime: now - start,
+            isFinished: value.isFinished || done
+          };
+        });
       }
     }
   }, [state2.isFinished]);

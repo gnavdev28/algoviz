@@ -36,9 +36,29 @@ export const useAlgorithm = (generatorFn, initialArray, extraArgs = {}) => {
     generatorRef.current = generatorFn(initArr, extraArgsRef.current);
   }, [generatorFn]);
 
+  // Synchronize state when initialArray changes (pattern for syncing state from props)
+  const [prevInitialArray, setPrevInitialArray] = useState(initialArray);
+  if (initialArray !== prevInitialArray) {
+    setPrevInitialArray(initialArray);
+    // Directly reset states during render for efficiency and to satisfy lint rules
+    setArray([...initialArray]);
+    setState({
+        activeIndices: [],
+        swapIndices: [],
+        auxIndices: [],
+        sortedIndices: [],
+        foundIndex: -1,
+        pseudoLine: 0,
+        pseudoLineStatus: 'active',
+        isFinished: false
+    });
+    setIsPlaying(false);
+  }
+
+  // Update generator ref in effect (safe place for ref updates)
   useEffect(() => {
-    init(initialArray);
-  }, [initialArray, init]);
+    generatorRef.current = generatorFn(initialArray, extraArgsRef.current);
+  }, [initialArray, generatorFn]);
 
   const play = useCallback(() => {
     if (state.isFinished || !generatorRef.current) {

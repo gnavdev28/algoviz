@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { bubbleSort } from '../engine/sorting/bubbleSort';
 import { quickSort } from '../engine/sorting/quickSort';
 import { mergeSort } from '../engine/sorting/mergeSort';
@@ -39,11 +39,11 @@ const Battle = () => {
 
   const [battleType, setBattleType] = useState('sort'); // 'sort' or 'search'
 
-  const filteredAlgos = Object.entries(ALGORITHMS).filter(([_, v]) => v.type === battleType);
+  const filteredAlgos = Object.entries(ALGORITHMS).filter(([, v]) => v.type === battleType);
 
   const handleTypeChange = (type) => {
     setBattleType(type);
-    const firstOfNewType = Object.entries(ALGORITHMS).find(([_, v]) => v.type === type)[0];
+    const firstOfNewType = Object.entries(ALGORITHMS).find(([, v]) => v.type === type)[0];
     setAlgoLeft(firstOfNewType);
     setAlgoRight(firstOfNewType);
     
@@ -95,7 +95,7 @@ const Battle = () => {
             <div className="flex items-center gap-3 font-mono text-sm">
                 <div className="flex items-center gap-1 text-slate-500">
                     <Timer size={14} />
-                    <span>{state.totalTime || (state.startTime ? Date.now() - state.startTime : 0)}ms</span>
+                    <span>{state.totalTime || 0}ms</span>
                 </div>
                 {state.isFinished && (
                     <span className="bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded text-[10px] font-bold border border-emerald-200 dark:border-emerald-800">
