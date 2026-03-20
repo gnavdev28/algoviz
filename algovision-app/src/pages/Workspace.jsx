@@ -17,11 +17,15 @@ import { useEffect } from 'react';
 const Workspace = ({ initialModule }) => {
   const [algoType, setAlgoType] = useState('bubble');
 
-  useEffect(() => {
+  // Adopting recommended pattern to update state directly during render
+  // when a prop changes to avoid cascading renders from Effects.
+  const [prevModule, setPrevModule] = useState(initialModule);
+  if (initialModule !== prevModule) {
+    setPrevModule(initialModule);
     if (initialModule === 'sort') setAlgoType('bubble');
     else if (initialModule === 'search') setAlgoType('linear');
     else if (initialModule === 'list') setAlgoType('linkedlist');
-  }, [initialModule]);
+  }
   const [baseArray, setBaseArray] = useState(generateRandomArray(15));
   const [inputSize, setInputSize] = useState('15');
   const [inputManual, setInputManual] = useState('');

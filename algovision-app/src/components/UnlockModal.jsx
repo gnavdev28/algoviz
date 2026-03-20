@@ -10,12 +10,19 @@ const UnlockModal = ({ isOpen, onClose, onUnlock, algoName }) => {
     let timer;
     if (isWatching && timeLeft > 0) {
       timer = setInterval(() => {
-        setTimeLeft(t => t - 1);
-        setProgress(p => p + 20);
+        setTimeLeft(t => {
+          if (t <= 1) {
+            // Delay completion to next tick to avoid cascading render lint error
+            setTimeout(() => {
+              setIsWatching(false);
+              onUnlock(algoName);
+            }, 0);
+            return 0;
+          }
+          return t - 1;
+        });
+        setProgress(p => Math.min(p + 20, 100));
       }, 1000);
-    } else if (isWatching && timeLeft === 0) {
-      setIsWatching(false);
-      onUnlock(algoName);
     }
     return () => clearInterval(timer);
   }, [isWatching, timeLeft, onUnlock, algoName]);
