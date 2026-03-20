@@ -4,10 +4,13 @@ import { quickSort } from '../engine/sorting/quickSort';
 import { mergeSort } from '../engine/sorting/mergeSort';
 import { linearSearch } from '../engine/searching/linearSearch';
 import { binarySearch } from '../engine/searching/binarySearch';
+import { gnomeSort } from '../engine/sorting/gnomeSort';
+import { thanosSort } from '../engine/sorting/thanosSort';
 import { useAlgorithm } from '../hooks/useAlgorithm';
 import { generateRandomArray } from '../utils/arrayUtils';
-import { createNode, calcInsertIndex, linkedListInsert, linkedListDelete } from '../engine/datastructures/linkedList';
+import { createNode, calcInsertIndex, linkedListInsert, linkedListDelete } from '../engine/datastruct/linkedList';
 import PseudocodePanel from '../components/PseudocodePanel';
+import UnlockModal from '../components/UnlockModal';
 
 const Workspace = () => {
   const [algoType, setAlgoType] = useState('bubble');
@@ -32,6 +35,31 @@ const Workspace = () => {
   const [llOperation, setLlOperation] = useState(null);
   const [llPseudoLine, setLlPseudoLine] = useState(0);
   const [llPseudoLineStatus, setLlPseudoLineStatus] = useState('active');
+
+  const [unlockedAlgos, setUnlockedAlgos] = useState(() => {
+    const saved = localStorage.getItem('unlocked_algos');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [unlockModal, setUnlockModal] = useState({ isOpen: false, algo: '' });
+
+  const premiumAlgos = ['gnome', 'thanos'];
+
+  const handleAlgoSelect = (val) => {
+    if (premiumAlgos.includes(val) && !unlockedAlgos.includes(val)) {
+      setUnlockModal({ isOpen: true, algo: val });
+    } else {
+      setAlgoType(val);
+    }
+  };
+
+  const unlockAlgo = (name) => {
+    const newList = [...unlockedAlgos, name];
+    setUnlockedAlgos(newList);
+    localStorage.setItem('unlocked_algos', JSON.stringify(newList));
+    setAlgoType(name);
+    setUnlockModal({ isOpen: false, algo: '' });
+  };
+
   const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
   const getGenerator = (type) => {
@@ -41,6 +69,8 @@ const Workspace = () => {
       case 'merge': return mergeSort;
       case 'linear': return linearSearch;
       case 'binary': return binarySearch;
+      case 'gnome': return gnomeSort;
+      case 'thanos': return thanosSort;
       default: return bubbleSort;
     }
   };
@@ -201,7 +231,7 @@ const Workspace = () => {
               <label className="block text-xs font-bold uppercase tracking-widest mb-3 text-slate-500 dark:text-slate-400">Bước 1: Chọn Module</label>
               <select 
                 value={algoType}
-                onChange={(e) => setAlgoType(e.target.value)}
+                onChange={(e) => handleAlgoSelect(e.target.value)}
                 disabled={isPlaying}
                 className="w-full bg-white dark:bg-gray-800/80 text-black dark:text-white border-4 border-black dark:border dark:border-gray-700 shadow-[4px_4px_0_0_#000] dark:shadow-none rounded-none dark:rounded-md py-3 px-3 text-xs font-bold uppercase cursor-pointer"
               >
@@ -209,6 +239,8 @@ const Workspace = () => {
                   <option value="bubble">Bubble Sort</option>
                   <option value="quick">Quick Sort</option>
                   <option value="merge">Merge Sort</option>
+                  <option value="gnome">{unlockedAlgos.includes('gnome') ? 'Gnome Sort' : 'Gnome Sort 🔒'}</option>
+                  <option value="thanos">{unlockedAlgos.includes('thanos') ? 'Thanos Sort' : 'Thanos Sort 🔒'}</option>
                 </optgroup>
                 <optgroup label="Tìm kiếm">
                   <option value="linear">Linear Search</option>
@@ -532,6 +564,13 @@ const Workspace = () => {
           <PseudocodePanel algoType={`linkedlist_${llOperation}`} activeLine={llPseudoLine} lineStatus={llPseudoLineStatus} />
         )}
       </div>
+
+      <UnlockModal 
+        isOpen={unlockModal.isOpen} 
+        algoName={unlockModal.algo} 
+        onClose={() => setUnlockModal({ isOpen: false, algo: '' })}
+        onUnlock={unlockAlgo}
+      />
     </div>
   );
 };

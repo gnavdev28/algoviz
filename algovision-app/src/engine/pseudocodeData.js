@@ -79,4 +79,25 @@ export const PSEUDOCODE = {
     '  prev.next ← node.next       // Bỏ qua node',
     '  Giải phóng bộ nhớ            // ✓ Xóa hoàn tất',
   ],
+
+  gnome: [
+    'procedure gnomeSort(A[], n)',
+    '  i ← 0',
+    '  while i < n do',
+    '    if i == 0 or A[i] >= A[i-1] then',
+    '      i ← i + 1              // Bước tới',
+    '    else',
+    '      swap(A[i], A[i-1])     // Đẩy lùi',
+    '      i ← i - 1              // Quay lại để kiểm tra',
+    '  return A',
+  ],
+
+  thanos: [
+    'procedure thanosSort(A[])',
+    '  while !isSorted(A) do',
+    '    Snap! (Phân rã ngẫu nhiên 1/2)',
+    '    Wait for survivors...     // Chờ đợi hồi kết',
+    '    if length <= 1 break      // Chỉ còn lại một nửa',
+    '  return A                    // ✓ Vũ trụ đã được cân bằng',
+  ],
 };

@@ -6,12 +6,17 @@ import { linearSearch } from '../engine/searching/linearSearch';
 import { binarySearch } from '../engine/searching/binarySearch';
 import { useBattle } from '../hooks/useBattle';
 import { generateRandomArray } from '../utils/arrayUtils';
-import { Play, Pause, RotateCcw, Zap, Trophy, Timer } from 'lucide-react';
+import { Play, Pause, RotateCcw, Zap, Trophy, Timer, Lock } from 'lucide-react';
+import { gnomeSort } from '../engine/sorting/gnomeSort';
+import { thanosSort } from '../engine/sorting/thanosSort';
+import UnlockModal from '../components/UnlockModal';
 
 const ALGORITHMS = {
   bubble: { name: 'Bubble Sort', gen: bubbleSort, type: 'sort' },
   quick: { name: 'Quick Sort', gen: quickSort, type: 'sort' },
   merge: { name: 'Merge Sort', gen: mergeSort, type: 'sort' },
+  gnome: { name: 'Gnome Sort', gen: gnomeSort, type: 'sort', isPremium: true },
+  thanos: { name: 'Thanos Sort', gen: thanosSort, type: 'sort', isPremium: true },
   linear: { name: 'Linear Search', gen: linearSearch, type: 'search' },
   binary: { name: 'Binary Search', gen: binarySearch, type: 'search' },
 };
@@ -24,6 +29,30 @@ const Battle = () => {
   const [inputManual, setInputManual] = useState('');
   const [inputError, setInputError] = useState('');
   const [targetVal, setTargetVal] = useState('42');
+
+  const [unlockedAlgos, setUnlockedAlgos] = useState(() => {
+    const saved = localStorage.getItem('unlocked_algos');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [unlockModal, setUnlockModal] = useState({ isOpen: false, algo: '', side: 'left' });
+
+  const handleSelectAlgo = (val, side) => {
+    if (ALGORITHMS[val].isPremium && !unlockedAlgos.includes(val)) {
+      setUnlockModal({ isOpen: true, algo: val, side });
+    } else {
+      if (side === 'left') setAlgoLeft(val);
+      else setAlgoRight(val);
+    }
+  };
+
+  const unlockAlgo = (name) => {
+    const newList = [...unlockedAlgos, name];
+    setUnlockedAlgos(newList);
+    localStorage.setItem('unlocked_algos', JSON.stringify(newList));
+    if (unlockModal.side === 'left') setAlgoLeft(name);
+    else setAlgoRight(name);
+    setUnlockModal({ isOpen: false, algo: '', side: 'left' });
+  };
 
   const extraArgs = useMemo(() => ({ target: parseInt(targetVal) || 0 }), [targetVal]);
 
@@ -227,10 +256,14 @@ const Battle = () => {
               <label className="text-[10px] font-black uppercase text-slate-500">Thuật toán 1</label>
               <select 
                 value={algoLeft}
-                onChange={(e) => setAlgoLeft(e.target.value)}
+                onChange={(e) => handleSelectAlgo(e.target.value, 'left')}
                 className="block w-40 bg-white dark:bg-gray-800 border-2 border-black dark:border-gray-700 px-2 py-1.5 text-xs font-bold uppercase focus:ring-0"
               >
-                {filteredAlgos.map(([k, v]) => <option key={k} value={k}>{v.name}</option>)}
+                {filteredAlgos.map(([k, v]) => (
+                  <option key={k} value={k}>
+                    {v.isPremium && !unlockedAlgos.includes(k) ? `${v.name} 🔒` : v.name}
+                  </option>
+                ))}
               </select>
            </div>
            <div className="pt-4 text-xl font-black italic text-slate-400">VS</div>
@@ -238,10 +271,14 @@ const Battle = () => {
               <label className="text-[10px] font-black uppercase text-slate-500">Thuật toán 2</label>
               <select 
                 value={algoRight}
-                onChange={(e) => setAlgoRight(e.target.value)}
+                onChange={(e) => handleSelectAlgo(e.target.value, 'right')}
                 className="block w-40 bg-white dark:bg-gray-800 border-2 border-black dark:border-gray-700 px-2 py-1.5 text-xs font-bold uppercase focus:ring-0"
               >
-                {filteredAlgos.map(([k, v]) => <option key={k} value={k}>{v.name}</option>)}
+                {filteredAlgos.map(([k, v]) => (
+                  <option key={k} value={k}>
+                    {v.isPremium && !unlockedAlgos.includes(k) ? `${v.name} 🔒` : v.name}
+                  </option>
+                ))}
               </select>
            </div>
         </div>
@@ -367,11 +404,15 @@ const Battle = () => {
                  `${ALGORITHMS[algoRight].name} CHIẾN THẮNG!`}
             </span>
             <div className="h-4 w-[1px] bg-gray-700 mx-2"></div>
-            <span className="text-xs font-mono text-gray-400">
-                Lệch: {Math.abs(state1.totalTime - state2.totalTime)}ms
-            </span>
         </div>
       )}
+
+      <UnlockModal 
+        isOpen={unlockModal.isOpen}
+        algoName={unlockModal.algo}
+        onClose={() => setUnlockModal({ isOpen: false, algo: '', side: 'left' })}
+        onUnlock={unlockAlgo}
+      />
     </div>
   );
 };
