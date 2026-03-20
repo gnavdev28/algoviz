@@ -12,8 +12,16 @@ import { createNode, calcInsertIndex, linkedListInsert, linkedListDelete } from 
 import PseudocodePanel from '../components/PseudocodePanel';
 import UnlockModal from '../components/UnlockModal';
 
-const Workspace = () => {
+import { useEffect } from 'react';
+
+const Workspace = ({ initialModule }) => {
   const [algoType, setAlgoType] = useState('bubble');
+
+  useEffect(() => {
+    if (initialModule === 'sort') setAlgoType('bubble');
+    else if (initialModule === 'search') setAlgoType('linear');
+    else if (initialModule === 'list') setAlgoType('linkedlist');
+  }, [initialModule]);
   const [baseArray, setBaseArray] = useState(generateRandomArray(15));
   const [inputSize, setInputSize] = useState('15');
   const [inputManual, setInputManual] = useState('');

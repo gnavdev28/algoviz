@@ -1,30 +1,82 @@
+import { BarChart2, Search, Layers, Lock } from 'lucide-react';
+
 const Home = ({ onNavigate }) => {
+  const modules = [
+    { 
+      id: 'sort', 
+      title: 'SẮP XẾP', 
+      icon: <BarChart2 size={32} />, 
+      color: 'bg-indigo-500',
+      textColor: 'text-white',
+      action: () => onNavigate('workspace', 'sort')
+    },
+    { 
+      id: 'search', 
+      title: 'TÌM KIẾM', 
+      icon: <Search size={32} />, 
+      color: 'bg-emerald-500',
+      textColor: 'text-white',
+      action: () => onNavigate('workspace', 'search')
+    },
+    { 
+      id: 'list', 
+      title: 'DS LIÊN KẾT', 
+      icon: <Layers size={32} />, 
+      color: 'bg-amber-500',
+      textColor: 'text-white',
+      action: () => onNavigate('workspace', 'list')
+    },
+    { 
+      id: 'soon', 
+      title: 'SẮP RA MẮT', 
+      icon: <Lock size={32} />, 
+      color: 'bg-slate-100 dark:bg-slate-800',
+      textColor: 'text-slate-400 dark:text-slate-500',
+      disabled: true
+    },
+  ];
+
   return (
-    <div className="flex-1 overflow-y-auto bg-white dark:bg-gray-950 text-black dark:text-white">
-      <div className="max-w-4xl mx-auto px-6 py-32 flex flex-col items-center justify-center min-h-[80vh]">
-        <div className="text-center space-y-12 w-full">
+    <div className="flex-1 overflow-y-auto bg-white dark:bg-gray-950 text-black dark:text-white pb-20 tracking-tight">
+      <div className="max-w-6xl mx-auto px-6 pt-24 pb-12">
+        <div className="text-center space-y-8 mb-20">
           <h1 className="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-none">
             Trực quan hóa<br/>Thuật toán.
           </h1>
-          
-          <p className="text-xl uppercase tracking-widest border-y-4 border-black dark:border-gray-600 py-6 font-bold text-slate-700 dark:text-slate-300">
-            Sprint 3 – Battle Mode & CI/CD
+          <p className="inline-block text-sm uppercase tracking-[0.3em] font-black border-2 border-black dark:border-gray-500 px-4 py-2">
+            Học tập qua trải nghiệm thực tế
           </p>
-          
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-12">
-            <button 
-              onClick={() => onNavigate('workspace')}
-              className="uppercase tracking-widest bg-black dark:bg-white text-white dark:text-black px-12 py-5 font-black text-lg border-4 border-black dark:border-white shadow-[8px_8px_0_0_#000] dark:shadow-[8px_8px_0_0_rgba(255,255,255,0.3)] hover:-translate-y-1 hover:shadow-[12px_12px_0_0_#000] dark:hover:shadow-[12px_12px_0_0_rgba(255,255,255,0.4)] transition-all w-full sm:w-auto"
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {modules.map((m) => (
+            <button
+              key={m.id}
+              onClick={m.action}
+              disabled={m.disabled}
+              className={`group relative flex flex-col items-center justify-center p-12 border-4 border-black text-center transition-all ${
+                m.disabled 
+                ? 'cursor-not-allowed bg-slate-100 dark:bg-slate-800' 
+                : `${m.color} hover:-translate-y-2 hover:shadow-[12px_12px_0_0_#000]`
+              } shadow-[8px_8px_0_0_#000] ${m.color}`}
             >
-              BẮT ĐẦU HỌC
+              <div className="mb-6 p-4 bg-white border-2 border-black inline-block w-fit group-hover:rotate-12 transition-transform text-black">
+                {m.icon}
+              </div>
+              <h3 className={`text-2xl font-black uppercase tracking-tighter drop-shadow-sm ${m.textColor}`}>
+                {m.title}
+              </h3>
             </button>
+          ))}
+        </div>
+
+        <div className="mt-16 text-center">
             <button 
               onClick={() => onNavigate('battle')}
-              className="uppercase tracking-widest bg-white dark:bg-gray-900 text-black dark:text-white px-12 py-5 font-black text-lg border-4 border-black dark:border-gray-500 shadow-[8px_8px_0_0_#ccc] dark:shadow-[8px_8px_0_0_rgba(255,255,255,0.1)] hover:-translate-y-1 hover:shadow-[12px_12px_0_0_#ccc] transition-all w-full sm:w-auto"
+              className="group inline-flex items-center gap-4 bg-white dark:bg-gray-900 text-black dark:text-white px-12 py-6 font-black text-xl border-4 border-black shadow-[8px_8px_0_0_#000] hover:-translate-y-1 hover:shadow-[12px_12px_0_0_#000] transition-all uppercase"
             >
-              BATTLE MODE
+              SO SÁNH THUẬT TOÁN (BATTLE MODE)
             </button>
-          </div>
         </div>
       </div>
     </div>
