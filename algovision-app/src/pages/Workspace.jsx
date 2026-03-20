@@ -12,8 +12,6 @@ import { createNode, calcInsertIndex, linkedListInsert, linkedListDelete } from 
 import PseudocodePanel from '../components/PseudocodePanel';
 import UnlockModal from '../components/UnlockModal';
 
-import { useEffect } from 'react';
-
 const Workspace = ({ initialModule }) => {
   const [algoType, setAlgoType] = useState('bubble');
 
