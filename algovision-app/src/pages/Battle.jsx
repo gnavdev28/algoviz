@@ -6,7 +6,7 @@ import { linearSearch } from '../engine/searching/linearSearch';
 import { binarySearch } from '../engine/searching/binarySearch';
 import { useBattle } from '../hooks/useBattle';
 import { generateRandomArray } from '../utils/arrayUtils';
-import { Play, Pause, RotateCcw, Zap, Trophy, Timer, Lock } from 'lucide-react';
+import { Play, Pause, RotateCcw, Zap, Trophy, Timer, Lock, ChevronDown, ChevronUp, Settings as SettingsIcon } from 'lucide-react';
 import { gnomeSort } from '../engine/sorting/gnomeSort';
 import { thanosSort } from '../engine/sorting/thanosSort';
 import UnlockModal from '../components/UnlockModal';
@@ -29,6 +29,7 @@ const Battle = () => {
   const [inputManual, setInputManual] = useState('');
   const [inputError, setInputError] = useState('');
   const [targetVal, setTargetVal] = useState('42');
+  const [isControlsOpen, setIsControlsOpen] = useState(true);
 
   const [unlockedAlgos, setUnlockedAlgos] = useState(() => {
     const saved = localStorage.getItem('unlocked_algos');
@@ -133,26 +134,28 @@ const Battle = () => {
     init(newArr);
   };
 
-  const getBarColor = (idx, state, algoKey) => {
+
+  const getBarColorInHex = (idx, state, algoKey) => {
     const isSearch = ALGORITHMS[algoKey].type === 'search';
-    
-    // When finished
+    const isDark = document.documentElement.classList.contains('dark');
+
     if (state.isFinished) {
       if (isSearch) {
         if (state.foundIndex !== -1) {
-          return idx === state.foundIndex ? 'bg-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)] scale-110 z-10' : 'bg-slate-300 dark:bg-gray-700 opacity-50';
+          return idx === state.foundIndex ? '#10b981' : (isDark ? '#374151' : '#cbd5e1'); // emerald-500 : Gray-700 / Slate-300
         }
-        return 'bg-red-400 dark:bg-red-900/40 opacity-50'; // Not found
-      } else {
-        return 'bg-emerald-500'; // Sorting finished -> all green
+        return isDark ? 'rgba(127, 29, 29, 0.4)' : '#f87171'; // red-900/40 : red-400
       }
+      return '#10b981'; // emerald-500
     }
 
-    if (state.sortedIndices.includes(idx)) return 'bg-emerald-500';
-    if (state.swapIndices.includes(idx)) return 'bg-red-500 scale-110 z-10';
-    if (state.activeIndices.includes(idx)) return 'bg-amber-400 scale-105 z-10';
-    if (state.foundIndex === idx) return 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]';
-    return isSearch ? 'bg-slate-400 dark:bg-gray-600' : 'bg-indigo-500 dark:bg-indigo-600';
+    if (state.sortedIndices.includes(idx)) return '#10b981';
+    if (state.swapIndices.includes(idx)) return '#ef4444'; // red-500
+    if (state.activeIndices.includes(idx)) return '#fbbf24'; // amber-400
+    if (state.foundIndex === idx) return '#10b981';
+    
+    // Default blue
+    return isSearch ? (isDark ? '#4b5563' : '#94a3b8') : (isDark ? '#2563eb' : '#3b82f6'); // blue-600 : blue-500
   };
 
   const renderViz = (array, state, title, algoKey) => {
@@ -179,21 +182,27 @@ const Battle = () => {
             </div>
         </div>
 
-        <div className="flex-1 p-6 flex items-end justify-center gap-1 min-h-[300px]">
-          {array.map((item, idx) => (
-            <div
-              key={item.id}
-              className={`transition-all duration-200 rounded-t-sm relative ${getBarColor(idx, state, algoKey)}`}
-              style={{
-                height: `${(item.val / maxValue) * 80 + 10}%`,
-                width: `${Math.max(12, 100 / array.length)}%`,
-              }}
-            >
-              <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold opacity-0 group-hover:opacity-100 transition-opacity">
-                {item.val}
-              </span>
-            </div>
-          ))}
+        <div className="p-4 flex items-end justify-center gap-1 h-[280px] sm:flex-1 bg-slate-100 dark:bg-gray-800/10 overflow-visible relative border-t-2 border-black dark:border-gray-800">
+          {array.map((item, idx) => {
+            const barHeight = (item.val / (maxValue || 1)) * 90 + 5;
+            const barColor = getBarColorInHex(idx, state, algoKey);
+            return (
+              <div
+                key={item.id}
+                className="transition-all duration-300 rounded-t-sm relative border-t-2 border-black/40 dark:border-white/20 shadow-sm"
+                style={{
+                  height: `${barHeight}%`,
+                  width: `${Math.floor(92 / array.length)}%`,
+                  background: `linear-gradient(to top, ${barColor}, ${barColor}cc)`,
+                  boxShadow: `0 0 10px ${barColor}33`,
+                }}
+              >
+                <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-black opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white px-1 rounded pointer-events-none">
+                  {item.val}
+                </span>
+              </div>
+            );
+          })}
         </div>
         
         {state.isFinished && (
@@ -217,8 +226,22 @@ const Battle = () => {
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-white dark:bg-gray-950">
+      {/* Mobile Toggle Header */}
+      <div className="md:hidden flex items-center justify-between p-3 border-b-2 border-black dark:border-gray-800 bg-slate-100 dark:bg-gray-900 z-50">
+        <div className="flex items-center gap-2">
+           <SettingsIcon size={14} className="text-slate-500" />
+           <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Bảng điều khiển</span>
+        </div>
+        <button 
+          onClick={() => setIsControlsOpen(!isControlsOpen)}
+          className="p-1 border-2 border-black dark:border-gray-700 bg-white dark:bg-gray-800 shadow-[2px_2px_0_0_#000] dark:shadow-none transition-transform active:translate-y-0.5 active:shadow-none"
+        >
+          {isControlsOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        </button>
+      </div>
+
       {/* Top Controls */}
-      <div className="p-4 border-b-4 border-black dark:border-gray-800 flex flex-wrap items-center gap-6 bg-slate-50 dark:bg-gray-900/50">
+      <div className={`${isControlsOpen ? 'flex' : 'hidden md:flex'} p-4 border-b-4 border-black dark:border-gray-800 flex flex-wrap items-center gap-6 bg-slate-50 dark:bg-gray-900/50 transition-all duration-300`}>
         
         {/* Battle Type Segmented Control */}
         <div className="flex bg-white dark:bg-gray-800 border-2 border-black dark:border-gray-700 p-1 rounded-sm">

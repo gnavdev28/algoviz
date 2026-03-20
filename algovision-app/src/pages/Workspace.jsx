@@ -11,6 +11,7 @@ import { generateRandomArray } from '../utils/arrayUtils';
 import { createNode, calcInsertIndex, linkedListInsert, linkedListDelete } from '../engine/datastruct/linkedList';
 import PseudocodePanel from '../components/PseudocodePanel';
 import UnlockModal from '../components/UnlockModal';
+import { ChevronDown, ChevronUp, Settings as SettingsIcon } from 'lucide-react';
 
 const Workspace = ({ initialModule }) => {
   const [algoType, setAlgoType] = useState('bubble');
@@ -45,6 +46,7 @@ const Workspace = ({ initialModule }) => {
   const [llOperation, setLlOperation] = useState(null);
   const [llPseudoLine, setLlPseudoLine] = useState(0);
   const [llPseudoLineStatus, setLlPseudoLineStatus] = useState('active');
+  const [isControlsOpen, setIsControlsOpen] = useState(true);
 
   const [unlockedAlgos, setUnlockedAlgos] = useState(() => {
     const saved = localStorage.getItem('unlocked_algos');
@@ -232,11 +234,19 @@ const Workspace = ({ initialModule }) => {
   return (
     <div className="flex-1 flex flex-col md:flex-row h-full overflow-hidden bg-white dark:bg-[#0d1117] text-black dark:text-white">
       {/* Sidebar Controls */}
-      <div className="w-full md:w-72 border-r-4 border-black dark:border-r dark:border-gray-800 flex flex-col shrink-0 overflow-y-auto bg-slate-50 dark:bg-[#161b22]">
+      <div className={`${isControlsOpen ? 'h-auto md:h-full' : 'h-[60px] md:h-full'} w-full md:w-72 border-b-4 md:border-b-0 md:border-r-4 border-black dark:border-gray-800 flex flex-col shrink-0 overflow-y-auto bg-slate-50 dark:bg-[#161b22] transition-all duration-300`}>
         <div className="p-5">
-          <h2 className="font-black text-xl mb-6 uppercase tracking-tighter border-b-4 border-black dark:border-b dark:border-gray-700 pb-2">BẢNG ĐIỀU KHIỂN</h2>
+          <div className="flex items-center justify-between mb-6 border-b-4 border-black dark:border-b dark:border-gray-700 pb-2">
+            <h2 className="font-black text-xl uppercase tracking-tighter">BẢNG ĐIỀU KHIỂN</h2>
+            <button 
+              onClick={() => setIsControlsOpen(!isControlsOpen)}
+              className="md:hidden p-1 border-2 border-black dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-slate-100 dark:hover:bg-gray-700 transition-colors"
+            >
+              {isControlsOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+            </button>
+          </div>
           
-          <div className="space-y-6">
+          <div className={`space-y-6 ${isControlsOpen ? 'block' : 'hidden md:block'}`}>
             <div>
               <label className="block text-xs font-bold uppercase tracking-widest mb-3 text-slate-500 dark:text-slate-400">Bước 1: Chọn Module</label>
               <select 

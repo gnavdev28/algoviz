@@ -10,17 +10,17 @@ const Navbar = ({ currentPage, onNavigate, isDark, toggleTheme }) => {
         ALGOVISION.
       </div>
       
-      <div className="flex items-center gap-6 text-sm uppercase tracking-widest font-black text-black dark:text-white">
+      <div className="flex items-center gap-8 text-[11px] uppercase tracking-[0.2em] font-black text-black dark:text-white">
         <button 
           onClick={() => onNavigate('workspace')}
-          className={`transition-all hover:opacity-50 ${currentPage === 'workspace' ? 'underline decoration-4 underline-offset-8' : ''}`}
+          className={`transition-all duration-300 ${currentPage === 'workspace' ? 'opacity-100' : 'opacity-30 hover:opacity-100 font-medium'}`}
         >
           KHÔNG GIAN HỌC
         </button>
-
+        <div className="w-[1px] h-4 bg-slate-200 dark:bg-gray-800 hidden sm:block"></div>
         <button 
           onClick={() => onNavigate('battle')}
-          className={`transition-all hover:opacity-50 ${currentPage === 'battle' ? 'underline decoration-4 underline-offset-8' : ''}`}
+          className={`transition-all duration-300 ${currentPage === 'battle' ? 'opacity-100' : 'opacity-30 hover:opacity-100 font-medium'}`}
         >
           BATTLE MODE
         </button>
