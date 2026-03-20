@@ -12,7 +12,9 @@ import PseudocodePanel from '../components/PseudocodePanel';
 const Workspace = () => {
   const [algoType, setAlgoType] = useState('bubble');
   const [baseArray, setBaseArray] = useState(generateRandomArray(15));
-  const [customInput, setCustomInput] = useState('');
+  const [inputSize, setInputSize] = useState('15');
+  const [inputManual, setInputManual] = useState('');
+  const [inputError, setInputError] = useState('');
   const [targetVal, setTargetVal] = useState('');
   
   const [llNodes, setLlNodes] = useState(() => {
@@ -58,14 +60,46 @@ const Workspace = () => {
   const isSearching = ['linear', 'binary'].includes(algoType);
   const isLinkedList = algoType === 'linkedlist';
 
-  const handleApplyCustom = () => {
-    let size = parseInt(customInput);
+  const handleApplySize = () => {
+    setInputError('');
+    let size = parseInt(inputSize);
     if (isNaN(size) || size <= 0) {
-       alert("Vui lòng nhập số lượng hợp lệ (1-50)");
+       setInputError("Nhập số 1-50");
        return;
     }
-    if (size > 50) size = 50;
+    if (size > 50) {
+      setInputError("Tối đa 50 phần tử");
+      size = 50;
+    }
     setBaseArray(generateRandomArray(size));
+  };
+
+  const handleApplyManual = () => {
+    setInputError('');
+    if (!inputManual.trim()) return;
+
+    const vals = inputManual.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
+    if (vals.length === 0) {
+      setInputError("Lỗi định dạng (VD: 1, 2, 3)");
+      return;
+    }
+    if (vals.length > 50) {
+      setInputError("Mảng quá lớn (>50)");
+      return;
+    }
+    setBaseArray(vals.map(v => ({ id: Math.random(), val: v })));
+  };
+
+  const handleSetPreset = (type) => {
+    setInputError('');
+    let arr = [...baseArray];
+    if (type === 'random') {
+      setBaseArray(generateRandomArray(baseArray.length));
+    } else if (type === 'sorted') {
+      setBaseArray(arr.sort((a,b) => a.val - b.val).map(i => ({...i, id: Math.random()})));
+    } else if (type === 'reversed') {
+      setBaseArray(arr.sort((a,b) => b.val - a.val).map(i => ({...i, id: Math.random()})));
+    }
   };
 
   const handleLLInsert = async () => {
@@ -199,18 +233,42 @@ const Workspace = () => {
                 </div>
 
                 <div className="border-t-4 border-black dark:border-t dark:border-gray-700 pt-6">
-                  <label className="block text-xs font-bold uppercase tracking-widest mb-3 text-slate-500 dark:text-slate-400">Sinh mảng ngẫu nhiên</label>
-                  <div className="flex flex-col gap-2">
-                     <input 
-                        type="number"
-                        placeholder="Số lượng (Max 50)"
-                        value={customInput}
-                        onChange={(e) => setCustomInput(e.target.value)}
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase tracking-widest mb-2 text-slate-500">1. Số lượng ngẫu nhiên</label>
+                      <div className="flex gap-2">
+                        <input 
+                          type="number"
+                          placeholder="Size"
+                          value={inputSize}
+                          onChange={(e) => { setInputSize(e.target.value); setInputError(''); }}
+                          disabled={isPlaying}
+                          className="flex-1 border-4 border-black dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-xs font-bold outline-none"
+                        />
+                        <button onClick={handleApplySize} disabled={isPlaying} className="bg-black dark:bg-indigo-600 text-white px-4 py-2 text-[10px] font-black uppercase">Tạo</button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold uppercase tracking-widest mb-2 text-slate-500">2. Nhập mảng tay</label>
+                      <input 
+                        type="text"
+                        placeholder="VD: 10, 2, 35, 8"
+                        value={inputManual}
+                        onChange={(e) => { setInputManual(e.target.value); setInputError(''); }}
                         disabled={isPlaying}
-                        min="1" max="50"
-                        className="w-full border-4 border-black dark:border dark:border-gray-700 bg-white dark:bg-gray-800/80 text-black dark:text-white px-3 py-2 text-xs font-mono outline-none shadow-[4px_4px_0_0_#000] dark:shadow-none dark:rounded-md"
-                     />
-                     <button onClick={handleApplyCustom} disabled={isPlaying || !customInput} className="w-full uppercase font-black border-4 border-black dark:border dark:border-gray-600 text-xs py-2 bg-black dark:bg-indigo-600 text-white hover:bg-white dark:hover:bg-indigo-500 hover:text-black dark:hover:text-white hover:shadow-[4px_4px_0_0_#000] dark:hover:shadow-none dark:rounded-md transition-all disabled:opacity-50">Tạo Mảng Random</button>
+                        className="w-full border-4 border-black dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-xs font-mono outline-none mb-2"
+                      />
+                      <button onClick={handleApplyManual} disabled={isPlaying || !inputManual} className="w-full bg-black dark:bg-indigo-600 text-white py-2 text-[10px] font-black uppercase">Áp dụng mảng</button>
+                    </div>
+
+                    {inputError && <p className="text-[10px] text-red-500 font-bold uppercase">{inputError}</p>}
+                    
+                    <div className="grid grid-cols-3 gap-1 pt-2 border-t-2 border-dashed border-slate-200 dark:border-gray-800">
+                        <button onClick={() => handleSetPreset('random')} disabled={isPlaying} className="text-[9px] font-bold border-2 border-black dark:border-gray-700 py-1 hover:bg-slate-100 dark:hover:bg-gray-700 uppercase">Reshuffle</button>
+                        <button onClick={() => handleSetPreset('sorted')} disabled={isPlaying} className="text-[9px] font-bold border-2 border-black dark:border-gray-700 py-1 hover:bg-slate-100 dark:hover:bg-gray-700 uppercase">Sắp xếp</button>
+                        <button onClick={() => handleSetPreset('reversed')} disabled={isPlaying} className="text-[9px] font-bold border-2 border-black dark:border-gray-700 py-1 hover:bg-slate-100 dark:hover:bg-gray-700 uppercase">Ngược</button>
+                    </div>
                   </div>
                 </div>
               </>

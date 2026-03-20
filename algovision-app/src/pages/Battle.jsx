@@ -20,6 +20,9 @@ const Battle = () => {
   const [algoLeft, setAlgoLeft] = useState('bubble');
   const [algoRight, setAlgoRight] = useState('quick');
   const [baseArray, setBaseArray] = useState(generateRandomArray(15));
+  const [inputSize, setInputSize] = useState('15');
+  const [inputManual, setInputManual] = useState('');
+  const [inputError, setInputError] = useState('');
   const [targetVal, setTargetVal] = useState('42');
 
   const extraArgs = useMemo(() => ({ target: parseInt(targetVal) || 0 }), [targetVal]);
@@ -47,14 +50,56 @@ const Battle = () => {
     setAlgoLeft(firstOfNewType);
     setAlgoRight(firstOfNewType);
     
-    // For Search Battle, it's better to show a sorted array because Binary Search requires it
-    const newArr = type === 'search' ? [...baseArray].sort((a, b) => a.val - b.val) : [...baseArray];
+    // Do not force sort anymore, let user decide
+    const newArr = [...baseArray];
     setBaseArray(newArr);
     init(newArr);
   };
 
-  const handleRandomize = () => {
-    const newArr = generateRandomArray(15);
+
+  const handleApplySize = () => {
+    setInputError('');
+    let size = parseInt(inputSize);
+    if (isNaN(size) || size <= 0) {
+       setInputError("Lỗi");
+       return;
+    }
+    if (size > 50) size = 50;
+    const newArr = generateRandomArray(size);
+    setBaseArray(newArr);
+    init(newArr);
+  };
+
+  const handleApplyManual = () => {
+    setInputError('');
+    if (!inputManual.trim()) return;
+
+    const vals = inputManual.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
+    if (vals.length === 0) {
+      setInputError("Sai định dạng");
+      return;
+    }
+    if (vals.length > 50) {
+      setInputError("Máx 50");
+      return;
+    }
+    const newArr = vals.map(v => ({ id: Math.random(), val: v }));
+    setBaseArray(newArr);
+    init(newArr);
+  };
+
+  const handleSetPreset = (type) => {
+    setInputError('');
+    let arr = [...baseArray];
+    let newArr = [];
+    if (type === 'random') {
+      newArr = generateRandomArray(baseArray.length);
+    } else if (type === 'sorted') {
+      newArr = arr.sort((a,b) => a.val - b.val).map(i => ({...i, id: Math.random()}));
+    } else if (type === 'reversed') {
+      newArr = arr.sort((a,b) => b.val - a.val).map(i => ({...i, id: Math.random()}));
+    }
+    
     setBaseArray(newArr);
     init(newArr);
   };
@@ -238,12 +283,53 @@ const Battle = () => {
            </button>
         </div>
 
-        <button 
-           onClick={handleRandomize}
-           className="px-4 py-2 border-2 border-black dark:border-gray-700 text-xs font-black uppercase tracking-widest hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all ml-auto"
-        >
-          Tầng dữ liệu mới
-        </button>
+        <div className="flex items-center gap-3">
+           <div className="flex gap-1 border-r-2 border-slate-300 dark:border-gray-700 pr-3">
+              <input 
+                type="number"
+                placeholder="Size"
+                value={inputSize}
+                onChange={(e) => { setInputSize(e.target.value); setInputError(''); }}
+                disabled={isPlaying}
+                className="w-12 bg-white dark:bg-gray-800 border-2 border-black dark:border-gray-700 px-1 py-1 text-[10px] font-bold"
+              />
+              <button 
+                onClick={handleApplySize} 
+                disabled={isPlaying}
+                className="bg-purple-600 dark:bg-purple-700 text-white px-2 text-[8px] font-black uppercase hover:bg-purple-500 transition-colors"
+              >
+                Tạo
+              </button>
+           </div>
+           
+           <div className="flex flex-col relative">
+              <div className="flex gap-1">
+                <input 
+                  type="text"
+                  placeholder="Mảng: 1,2,3"
+                  value={inputManual}
+                  onChange={(e) => { setInputManual(e.target.value); setInputError(''); }}
+                  disabled={isPlaying}
+                  className={`w-28 bg-white dark:bg-gray-800 border-2 ${inputError ? 'border-red-500' : 'border-black dark:border-gray-700'} px-2 py-1 text-[10px] font-bold outline-none`}
+                />
+                <button 
+                  onClick={handleApplyManual}
+                  disabled={isPlaying || !inputManual}
+                  className="bg-purple-600 dark:bg-purple-700 text-white px-2 py-1 flex items-center justify-center hover:bg-purple-500 text-[8px] font-black uppercase transition-colors"
+                  title="Áp dụng mảng tay"
+                >
+                  Tạo
+                </button>
+              </div>
+              {inputError && <span className="absolute -bottom-3 left-0 text-[7px] text-red-500 font-bold uppercase">{inputError}</span>}
+           </div>
+
+           <div className="flex border-2 border-black dark:border-gray-700">
+              <button onClick={() => handleSetPreset('random')} disabled={isPlaying} className="px-2 py-1 text-[8px] font-bold border-r border-black dark:border-gray-700 hover:bg-slate-200 dark:hover:bg-gray-700" title="Reshuffle">⟳</button>
+              <button onClick={() => handleSetPreset('sorted')} disabled={isPlaying} className="px-2 py-1 text-[8px] font-bold border-r border-black dark:border-gray-700 hover:bg-slate-200 dark:hover:bg-gray-700" title="Tăng">↑</button>
+              <button onClick={() => handleSetPreset('reversed')} disabled={isPlaying} className="px-2 py-1 text-[8px] font-bold hover:bg-slate-200 dark:hover:bg-gray-700" title="Giảm">↓</button>
+           </div>
+        </div>
       </div>
 
       {/* Battle Arena */}
