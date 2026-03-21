@@ -74,19 +74,24 @@ export const useAlgorithm = (generatorFn, initialArray, extraArgs = {}) => {
   const step = useCallback(() => {
     if (generatorRef.current) {
       const { value, done } = generatorRef.current.next();
-      if (value) {
-        setArray(value.array);
-        setState({
-          activeIndices: value.activeIndices || [],
-          swapIndices: value.swapIndices || [],
-          auxIndices: value.auxIndices || [],
-          sortedIndices: value.sortedIndices || [],
-          foundIndex: value.foundIndex !== undefined ? value.foundIndex : -1,
-          pseudoLine: value.pseudoLine || 0,
-          pseudoLineStatus: value.pseudoLineStatus || 'active',
-          isFinished: value.isFinished || done
+      if (value || done) {
+        if (value) setArray(value.array);
+        setState(prev => {
+          const merged = value || {};
+          return {
+            ...prev,
+            ...merged,
+            activeIndices: merged.activeIndices || [],
+            swapIndices: merged.swapIndices || [],
+            auxIndices: merged.auxIndices || [],
+            sortedIndices: merged.sortedIndices || [],
+            foundIndex: merged.foundIndex !== undefined ? merged.foundIndex : -1,
+            pseudoLine: merged.pseudoLine || 0,
+            pseudoLineStatus: merged.pseudoLineStatus || 'active',
+            isFinished: merged.isFinished || done
+          };
         });
-        if (value.isFinished || done) {
+        if ((value && value.isFinished) || done) {
           setIsPlaying(false);
         }
       }

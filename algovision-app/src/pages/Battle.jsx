@@ -135,11 +135,12 @@ const Battle = () => {
   };
 
 
-  const getBarColorInHex = (idx, state, algoKey) => {
+  const getBarColorInHex = (idx, state, algoKey, array) => {
     const isSearch = ALGORITHMS[algoKey].type === 'search';
     const isDark = document.documentElement.classList.contains('dark');
+    const isFullSorted = !isSearch && array.every((v, i, a) => i === 0 || v.val >= a[i-1].val);
 
-    if (state.isFinished) {
+    if (state.isFinished || state.pseudoLineStatus === 'success' || (isFullSorted && array.length > 1)) {
       if (isSearch) {
         if (state.foundIndex !== -1) {
           return idx === state.foundIndex ? '#10b981' : (isDark ? '#374151' : '#cbd5e1'); // emerald-500 : Gray-700 / Slate-300
@@ -185,7 +186,7 @@ const Battle = () => {
         <div className="p-4 flex items-end justify-center gap-1 h-[280px] sm:flex-1 bg-slate-100 dark:bg-gray-800/10 overflow-visible relative border-t-2 border-black dark:border-gray-800">
           {array.map((item, idx) => {
             const barHeight = (item.val / (maxValue || 1)) * 90 + 5;
-            const barColor = getBarColorInHex(idx, state, algoKey);
+            const barColor = getBarColorInHex(idx, state, algoKey, array);
             return (
               <div
                 key={item.id}

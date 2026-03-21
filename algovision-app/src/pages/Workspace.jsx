@@ -410,8 +410,9 @@ const Workspace = ({ initialModule }) => {
                 let colorClass = "bg-blue-500 border-black dark:border-blue-400";
                 let transformClass = "";
                 
-                if (state.isFinished || isSorted) {
-                    colorClass = "bg-green-500 border-black dark:border-green-400";
+                const isFullSorted = !isSearching && !isLinkedList && array.length > 5 && array.every((v, i, a) => i === 0 || v.val >= a[i-1].val);
+                if (state.isFinished || isSorted || state.pseudoLineStatus === 'success' || isFullSorted) {
+                    colorClass = "bg-emerald-500 border-black dark:border-emerald-400 shadow-[0_4px_10px_rgba(16,185,129,0.3)]";
                 } else {
                     if (isAux) {
                         transformClass = "-translate-y-8 md:-translate-y-16 scale-95";

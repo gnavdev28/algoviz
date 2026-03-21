@@ -63,17 +63,19 @@ export const useBattle = (gen1Fn, gen2Fn, initialArray, extraArgs1 = {}, extraAr
   const step1 = useCallback(() => {
     if (gen1Ref.current && !state1.isFinished) {
       const { value, done } = gen1Ref.current.next();
-      if (value) {
-        setArray1(value.array);
+      if (value || done) {
+        if (value) setArray1(value.array);
         setState1(prev => {
           const now = Date.now();
           const start = prev.startTime || now;
+          const merged = value || {};
           return {
-            ...value,
+            ...prev,
+            ...merged,
             startTime: start,
-            endTime: (value.isFinished || done) ? now : null,
+            endTime: (merged.isFinished || done) ? now : null,
             totalTime: now - start,
-            isFinished: value.isFinished || done
+            isFinished: merged.isFinished || done
           };
         });
       }
@@ -83,17 +85,19 @@ export const useBattle = (gen1Fn, gen2Fn, initialArray, extraArgs1 = {}, extraAr
   const step2 = useCallback(() => {
     if (gen2Ref.current && !state2.isFinished) {
       const { value, done } = gen2Ref.current.next();
-      if (value) {
-        setArray2(value.array);
+      if (value || done) {
+        if (value) setArray2(value.array);
         setState2(prev => {
           const now = Date.now();
           const start = prev.startTime || now;
+          const merged = value || {};
           return {
-            ...value,
+            ...prev,
+            ...merged,
             startTime: start,
-            endTime: (value.isFinished || done) ? now : null,
+            endTime: (merged.isFinished || done) ? now : null,
             totalTime: now - start,
-            isFinished: value.isFinished || done
+            isFinished: merged.isFinished || done
           };
         });
       }
