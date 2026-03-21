@@ -8,9 +8,9 @@ export const useTheme = () => {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved !== null) return saved === 'dark';
     } catch {
-      // Ignore localStorage errors
+      // Bỏ qua lỗi localStorage
     }
-    // Fallback: kiểm tra preference hệ thống
+    // Dự phòng: kiểm tra preference hệ thống
     return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
   });
 
@@ -24,7 +24,7 @@ export const useTheme = () => {
     try {
       localStorage.setItem(STORAGE_KEY, isDark ? 'dark' : 'light');
     } catch {
-      // Ignore localStorage errors
+      // Bỏ qua lỗi localStorage
     }
   }, [isDark]);
 

@@ -36,11 +36,11 @@ export const useAlgorithm = (generatorFn, initialArray, extraArgs = {}) => {
     generatorRef.current = generatorFn(initArr, extraArgsRef.current);
   }, [generatorFn]);
 
-  // Synchronize state when initialArray changes (pattern for syncing state from props)
+  // Đồng bộ trạng thái khi initialArray thay đổi (pattern để đồng bộ trạng thái từ props)
   const [prevInitialArray, setPrevInitialArray] = useState(initialArray);
   if (initialArray !== prevInitialArray) {
     setPrevInitialArray(initialArray);
-    // Directly reset states during render for efficiency and to satisfy lint rules
+    // Đặt lại các state trực tiếp trong lúc render để tối ưu và đáp ứng quy tắc lint
     setArray([...initialArray]);
     setState({
         activeIndices: [],
@@ -55,7 +55,7 @@ export const useAlgorithm = (generatorFn, initialArray, extraArgs = {}) => {
     setIsPlaying(false);
   }
 
-  // Update generator ref in effect (safe place for ref updates)
+  // Cập nhật generator ref trong effect (nơi an toàn để cập nhật ref)
   useEffect(() => {
     generatorRef.current = generatorFn(initialArray, extraArgsRef.current);
   }, [initialArray, generatorFn]);

@@ -70,7 +70,7 @@ const Battle = () => {
     extraArgs
   );
 
-  const [battleType, setBattleType] = useState('sort'); // 'sort' or 'search'
+  const [battleType, setBattleType] = useState('sort'); // 'sắp xếp' hoặc 'tìm kiếm'
 
   const filteredAlgos = Object.entries(ALGORITHMS).filter(([, v]) => v.type === battleType);
 
@@ -80,7 +80,7 @@ const Battle = () => {
     setAlgoLeft(firstOfNewType);
     setAlgoRight(firstOfNewType);
     
-    // Do not force sort anymore, let user decide
+    // Không bắt buộc sắp xếp nữa, để người dùng quyết định
     const newArr = [...baseArray];
     setBaseArray(newArr);
     init(newArr);
@@ -155,7 +155,7 @@ const Battle = () => {
     if (state.activeIndices.includes(idx)) return '#fbbf24'; // amber-400
     if (state.foundIndex === idx) return '#10b981';
     
-    // Default blue
+    // Màu xanh mặc định
     return isSearch ? (isDark ? '#4b5563' : '#94a3b8') : (isDark ? '#2563eb' : '#3b82f6'); // blue-600 : blue-500
   };
 
@@ -208,14 +208,14 @@ const Battle = () => {
         
         {state.isFinished && (
             <div className="absolute inset-0 bg-white/10 dark:bg-black/20 backdrop-blur-[1px] flex items-center justify-center pointer-events-none">
-                {/* Visual indicator of completion */}
+                {/* Dấu hiệu trực quan của việc hoàn thành */}
             </div>
         )}
       </div>
     );
   };
 
-  // Winner logic
+  // Logic phân định người chiến thắng
   const winner = useMemo(() => {
     if (state1.isFinished && state2.isFinished) {
         if (state1.totalTime < state2.totalTime) return 'left';
@@ -227,7 +227,7 @@ const Battle = () => {
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-white dark:bg-gray-950">
-      {/* Mobile Toggle Header */}
+      {/* Nút bật/tắt trên thiết bị di động */}
       <div className="md:hidden flex items-center justify-between p-3 border-b-2 border-black dark:border-gray-800 bg-slate-100 dark:bg-gray-900 z-50">
         <div className="flex items-center gap-2">
            <SettingsIcon size={14} className="text-slate-500" />
@@ -241,10 +241,10 @@ const Battle = () => {
         </button>
       </div>
 
-      {/* Top Controls */}
+      {/* Bảng điều khiển trên cùng */}
       <div className={`${isControlsOpen ? 'flex' : 'hidden md:flex'} p-4 border-b-4 border-black dark:border-gray-800 flex flex-wrap items-center gap-6 bg-slate-50 dark:bg-gray-900/50 transition-all duration-300`}>
         
-        {/* Battle Type Segmented Control */}
+        {/* Phân đoạn chọn loại đối đầu */}
         <div className="flex bg-white dark:bg-gray-800 border-2 border-black dark:border-gray-700 p-1 rounded-sm">
             <button 
                 onClick={() => handleTypeChange('sort')}
@@ -309,7 +309,7 @@ const Battle = () => {
 
         <div className="h-10 w-[1px] bg-slate-300 dark:bg-gray-700 mx-2 hidden md:block"></div>
 
-        {/* Speed Control */}
+        {/* Điều khiển tốc độ */}
         <div className="flex flex-col gap-1 min-w-[120px]">
           <div className="flex justify-between items-center text-[10px] font-black uppercase text-slate-500">
             <span>Tốc độ</span>
@@ -393,7 +393,7 @@ const Battle = () => {
         </div>
       </div>
 
-      {/* Battle Arena */}
+      {/* Đấu trường */}
       <div className="flex-1 p-6 flex flex-col md:flex-row gap-6 overflow-y-auto">
         <div className="flex-1 flex flex-col relative">
             {winner === 'left' && (
@@ -418,7 +418,7 @@ const Battle = () => {
         </div>
       </div>
 
-      {/* Results Banner */}
+      {/* Biểu ngữ kết quả */}
       {winner && (
         <div className="bg-black text-white px-6 py-3 flex items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <Trophy className="text-yellow-400" />

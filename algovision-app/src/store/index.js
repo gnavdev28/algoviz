@@ -1,6 +1,6 @@
 /**
- * Store Configuration (Local Persistence)
- * Aligning with Report.md 3-tier Architecture (Data Tier)
+ * Cấu hình lưu trữ (Lưu trữ cục bộ)
+ * Phù hợp với Kiến trúc 3 tầng trong Report.md (Tầng dữ liệu)
  */
 
 export const STORAGE_KEYS = {

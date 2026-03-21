@@ -42,7 +42,7 @@ export const useBattle = (gen1Fn, gen2Fn, initialArray, extraArgs1 = {}, extraAr
     if (timer2Ref.current) clearInterval(timer2Ref.current);
   }, [gen1Fn, gen2Fn, extraArgs1, extraArgs2]);
 
-  // Sync state when initialArray changes
+  // Đồng bộ trạng thái khi initialArray thay đổi
   const [prevInitialArray, setPrevInitialArray] = useState(initialArray);
   if (initialArray !== prevInitialArray) {
     setPrevInitialArray(initialArray);
@@ -54,7 +54,7 @@ export const useBattle = (gen1Fn, gen2Fn, initialArray, extraArgs1 = {}, extraAr
     setIsPlaying(false);
   }
 
-  // Update refs in effect
+  // Cập nhật refs trong effect
   useEffect(() => {
     gen1Ref.current = gen1Fn([...initialArray], extraArgs1);
     gen2Ref.current = gen2Fn([...initialArray], extraArgs2);
@@ -122,7 +122,7 @@ export const useBattle = (gen1Fn, gen2Fn, initialArray, extraArgs1 = {}, extraAr
       init(initialArray);
     }
     setIsPlaying(true);
-    // Mark start time if not already marked
+    // Đánh dấu thời gian bắt đầu nếu chưa được đánh dấu
     setState1(p => ({...p, startTime: p.startTime || Date.now()}));
     setState2(p => ({...p, startTime: p.startTime || Date.now()}));
   };

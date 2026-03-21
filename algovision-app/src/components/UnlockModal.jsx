@@ -12,7 +12,7 @@ const UnlockModal = ({ isOpen, onClose, onUnlock, algoName }) => {
       timer = setInterval(() => {
         setTimeLeft(t => {
           if (t <= 1) {
-            // Delay completion to next tick to avoid cascading render lint error
+            // Trì hoãn việc hoàn thành sang tick tiếp theo để tránh lỗi render hàng loạt
             setTimeout(() => {
               setIsWatching(false);
               onUnlock(algoName);
@@ -33,7 +33,7 @@ const UnlockModal = ({ isOpen, onClose, onUnlock, algoName }) => {
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
       <div className="bg-white dark:bg-gray-900 border-4 border-black dark:border-gray-700 w-full max-w-md overflow-hidden relative shadow-[8px_8px_0px_rgba(0,0,0,1)] dark:shadow-[8px_8px_0px_rgba(255,255,255,0.1)]">
         
-        {/* Header */}
+        {/* Tiêu đề */}
         <div className="bg-indigo-600 p-4 border-b-4 border-black dark:border-gray-700 flex items-center justify-between text-white">
           <h3 className="font-black uppercase tracking-tighter text-xl flex items-center gap-2">
             <Lock size={20} />

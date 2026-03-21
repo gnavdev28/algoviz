@@ -16,8 +16,8 @@ import { ChevronDown, ChevronUp, Settings as SettingsIcon } from 'lucide-react';
 const Workspace = ({ initialModule }) => {
   const [algoType, setAlgoType] = useState('bubble');
 
-  // Adopting recommended pattern to update state directly during render
-  // when a prop changes to avoid cascading renders from Effects.
+  // Áp dụng pattern được khuyên dùng để cập nhật state trực tiếp khi render
+  // khi một prop thay đổi để tránh lỗi render lặp lại từ Effects.
   const [prevModule, setPrevModule] = useState(initialModule);
   if (initialModule !== prevModule) {
     setPrevModule(initialModule);
@@ -233,7 +233,7 @@ const Workspace = ({ initialModule }) => {
 
   return (
     <div className="flex-1 flex flex-col md:flex-row h-full overflow-hidden bg-white dark:bg-[#0d1117] text-black dark:text-white">
-      {/* Sidebar Controls */}
+      {/* Điều khiển thanh bên */}
       <div className={`${isControlsOpen ? 'h-auto md:h-full' : 'h-[60px] md:h-full'} w-full md:w-72 border-b-4 md:border-b-0 md:border-r-4 border-black dark:border-gray-800 flex flex-col shrink-0 overflow-y-auto bg-slate-50 dark:bg-[#161b22] transition-all duration-300`}>
         <div className="p-5">
           <div className="flex items-center justify-between mb-6 border-b-4 border-black dark:border-b dark:border-gray-700 pb-2">
@@ -393,7 +393,7 @@ const Workspace = ({ initialModule }) => {
         </div>
       </div>
       
-      {/* Canvas Area */}
+      {/* Vùng hiển thị */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <div className="flex-1 flex flex-col min-w-0 p-6 pb-2 bg-white dark:bg-[#0d1117] relative overflow-auto pattern-grid">
           {!isLinkedList && !isSearching && (
@@ -488,16 +488,16 @@ const Workspace = ({ initialModule }) => {
                   `}</style>
                   
                   <div className="w-full flex flex-nowrap items-center justify-start gap-0 px-6 z-10 overflow-x-auto min-h-[120px] py-12">
-                      {/* HEAD */}
+                      {/* ĐẦU */}
                       <div className="flex items-center flex-shrink-0">
                           <div className={`font-bold text-xs px-2.5 py-1 rounded-md transition-all duration-300 ${llActiveId === 'HEAD' ? 'bg-amber-400 text-black scale-105 shadow-md' : 'bg-gray-800 dark:bg-gray-700 text-white border border-gray-700 dark:border-gray-600'}`}>HEAD</div>
                           <svg className={`w-5 h-5 ll-arrow ${(llPointerStatus?.activeArrowNodeId === 'HEAD' && llPointerStatus?.step >= 3) ? 'opacity-0' : ''}`} viewBox="0 0 20 10"><path d="M0 5 L14 5 M10 1 L16 5 L10 9" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-slate-400 dark:text-slate-500"/></svg>
                       </div>
 
-                      {/* New node insertion at head (targetIdx === 0) */}
+                      {/* Chèn node mới ở đầu (targetIdx === 0) */}
                       {llNewNode && llNewNode.targetIdx === 0 && llPointerStatus && (
                           <div className="flex items-center flex-shrink-0 animate-popup">
-                              {/* Arrow from prev (HEAD) to new node — shown via amber arrow when step >= 3 */}
+                              {/* Mũi tên từ prev (HEAD) đến node mới — hiển thị mũi tên vàng khi step >= 3 */}
                               {llPointerStatus.step >= 3 && llPointerStatus.activeArrowNodeId === 'HEAD' && (
                                   <svg className="w-5 h-5 shrink-0 arrow-grow" viewBox="0 0 20 10"><path d="M0 5 L14 5 M10 1 L16 5 L10 9" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-amber-400"/></svg>
                               )}
@@ -508,14 +508,14 @@ const Workspace = ({ initialModule }) => {
                                       <div className="px-1.5 py-1 text-emerald-400 text-[8px]">→</div>
                                   </div>
                               </div>
-                              {/* Arrow from new node to next — green arrow */}
+                              {/* Mũi tên từ node mới đến node tiếp theo — mũi tên xanh */}
                               {llPointerStatus.step >= 2 && (
                                   <svg className="w-5 h-5 shrink-0 arrow-grow" viewBox="0 0 20 10"><path d="M0 5 L14 5 M10 1 L16 5 L10 9" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-emerald-500"/></svg>
                               )}
                           </div>
                       )}
 
-                      {/* Nodes */}
+                      {/* Các node */}
                       {llNodes.map((node, idx) => {
                           const isDeleting = node.isDeleting;
                           const isActive = node.id === llActiveId;
@@ -542,15 +542,15 @@ const Workspace = ({ initialModule }) => {
                                       </div>
                                   </div>
                                   
-                                  {/* Arrow to next — hide if this node's arrow is being redirected */}
+                                  {/* Mũi tên đến node tiếp theo — ẩn nếu mũi tên của node này đang được chuyển hướng */}
                                   <svg className={`w-4 h-5 ll-arrow shrink-0 ${(isPrevArrowActive && llPointerStatus?.step >= 3) ? 'opacity-0' : ''}`} viewBox="0 0 16 10">
                                     <path d="M0 5 L10 5 M7 2 L12 5 L7 8" fill="none" stroke="currentColor" strokeWidth="1.5" className={isActive ? 'text-amber-400' : 'text-slate-300 dark:text-gray-600'}/>
                                   </svg>
                                   
-                                  {/* New node inserting AFTER this node */}
+                                  {/* Node mới đang chèn SAU node này */}
                                   {isTargetAfter && llPointerStatus && (
                                       <div className="flex items-center flex-shrink-0 animate-popup">
-                                          {/* Arrow from prev node to new node — amber */}
+                                          {/* Mũi tên từ node trước đến node mới — màu vàng */}
                                           {llPointerStatus.step >= 3 && isPrevArrowActive && (
                                               <svg className="w-5 h-5 shrink-0 arrow-grow" viewBox="0 0 20 10"><path d="M0 5 L14 5 M10 1 L16 5 L10 9" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-amber-400"/></svg>
                                           )}
@@ -561,7 +561,7 @@ const Workspace = ({ initialModule }) => {
                                                   <div className="px-1.5 py-1 text-emerald-400 text-[8px]">→</div>
                                               </div>
                                           </div>
-                                          {/* Arrow from new node to next — green */}
+                                          {/* Mũi tên từ node mới đến node tiếp theo — màu xanh */}
                                           {llPointerStatus.step >= 2 && (
                                               <svg className="w-5 h-5 shrink-0 arrow-grow" viewBox="0 0 20 10"><path d="M0 5 L14 5 M10 1 L16 5 L10 9" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-emerald-500"/></svg>
                                           )}
@@ -570,7 +570,7 @@ const Workspace = ({ initialModule }) => {
                               </div>
                           )
                       })}
-                      {/* NULL terminator */}
+                      {/* Điểm kết thúc NULL */}
                       <div className="text-xs font-mono text-slate-400 dark:text-gray-600 border border-dashed border-slate-300 dark:border-gray-700 px-2 py-1 rounded-md flex-shrink-0">NULL</div>
                   </div>
               </div>

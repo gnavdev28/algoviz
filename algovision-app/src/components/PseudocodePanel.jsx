@@ -39,7 +39,7 @@ const PseudocodePanel = ({ algoType, activeLine, lineStatus = 'active' }) => {
     document.addEventListener('mouseup', onMouseUp);
   }, [height]);
 
-  // Color schemes based on lineStatus
+  // Biến thể màu sắc dựa trên lineStatus
   const getLineStyles = (isActive) => {
     if (!isActive) {
       return {

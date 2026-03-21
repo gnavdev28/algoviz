@@ -9,10 +9,10 @@ export function* thanosSort(array) {
   yield { array: [...arr], activeIndices: [], swapIndices: [], sortedIndices: [], pseudoLine: 0 };
 
   while (!isSorted(arr) && arr.length > 1) {
-    // Check if sorted
+    // Kiểm tra xem đã sắp xếp chưa
     yield { array: [...arr], activeIndices: arr.map((_, i) => i), swapIndices: [], sortedIndices: [], pseudoLine: 1 };
     
-    // Snap! (Mark all for "snap" effect)
+    // Búng tay! (Đánh dấu tất cả cho hiệu ứng "búng tay")
     yield { array: [...arr], activeIndices: [], swapIndices: arr.map((_, i) => i), sortedIndices: [], pseudoLine: 2 };
 
     const mid = Math.floor(arr.length / 2);

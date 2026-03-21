@@ -28,14 +28,14 @@ export function* mergeSort(initialArray) {
         // Tách thành L[] và R[]
         yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: getAux(), sortedIndices, pseudoLine: 6, isFinished: false };
 
-        // Comparison and Merge
+        // So sánh và Gộp
         while (i < n1 && j < n2) {
             let idL = L[i].id;
             let idR = R[j].id;
             let posL = arr.findIndex(x => x.id === idL);
             let posR = arr.findIndex(x => x.id === idR);
 
-            // Compare
+            // So sánh
             yield { array: [...arr], activeIndices: [posL, posR], swapIndices: [], auxIndices: getAux(), sortedIndices, pseudoLine: 7, isFinished: false };
             
             let chosenId = null;
@@ -52,7 +52,7 @@ export function* mergeSort(initialArray) {
             for(let p = currentPos; p > k; p--) arr[p] = arr[p - 1]; 
             arr[k] = element; 
 
-            // After move
+            // Sau khi di chuyển
             yield { array: [...arr], activeIndices: [], swapIndices: [k], auxIndices: getAux(), sortedIndices, pseudoLine: 8, isFinished: false };
             k++;
         }
