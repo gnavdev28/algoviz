@@ -37,13 +37,13 @@ const Home = ({ onNavigate }) => {
   ];
 
   return (
-    <div className="flex-1 overflow-y-auto bg-white dark:bg-gray-950 text-black dark:text-white pb-20 tracking-tight">
+    <div className="flex-1 overflow-y-auto bg-[var(--bg-primary)] text-black dark:text-white pb-20 tracking-tight">
       <div className="max-w-6xl mx-auto px-6 pt-24 pb-12">
         <div className="text-center space-y-8 mb-20">
           <h1 className="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-none">
             Trực quan hóa<br/>Thuật toán.
           </h1>
-          <p className="inline-block text-sm uppercase tracking-[0.3em] font-black border-2 border-black dark:border-gray-500 px-4 py-2">
+          <p className="inline-block text-sm uppercase tracking-[0.3em] font-black border-2 border-[var(--border-main)] px-4 py-2 opacity-80">
             Học tập qua trải nghiệm thực tế
           </p>
         </div>
@@ -54,11 +54,11 @@ const Home = ({ onNavigate }) => {
               key={m.id}
               onClick={m.action}
               disabled={m.disabled}
-              className={`group relative flex flex-col items-center justify-center p-12 border-4 border-black text-center transition-all ${
+              className={`group relative flex flex-col items-center justify-center p-12 border-4 border-[var(--border-main)] text-center transition-all ${
                 m.disabled 
-                ? 'cursor-not-allowed bg-slate-100 dark:bg-slate-800' 
-                : `${m.color} hover:-translate-y-2 hover:shadow-[12px_12px_0_0_#000]`
-              } shadow-[8px_8px_0_0_#000] ${m.color}`}
+                ? 'cursor-not-allowed bg-[var(--bg-secondary)] opacity-50' 
+                : `${m.color} hover:-translate-y-2 hover:shadow-[12px_12px_0_0_var(--border-main)]`
+              } shadow-[8px_8px_0_0_var(--border-main)]`}
             >
               <div className="mb-6 p-4 bg-white border-2 border-black inline-block w-fit group-hover:rotate-12 transition-transform text-black">
                 {m.icon}
@@ -73,7 +73,7 @@ const Home = ({ onNavigate }) => {
         <div className="mt-16 text-center">
             <button 
               onClick={() => onNavigate('battle')}
-              className="group inline-flex items-center gap-4 bg-white dark:bg-gray-900 text-black dark:text-white px-12 py-6 font-black text-xl border-4 border-black shadow-[8px_8px_0_0_#000] hover:-translate-y-1 hover:shadow-[12px_12px_0_0_#000] transition-all uppercase"
+              className="group inline-flex items-center gap-4 bg-[var(--bg-primary)] text-black dark:text-white px-12 py-6 font-black text-xl border-4 border-[var(--border-main)] shadow-[8px_8px_0_0_var(--border-main)] hover:-translate-y-1 hover:shadow-[12px_12px_0_0_var(--border-main)] transition-all uppercase"
             >
               SO SÁNH THUẬT TOÁN (BATTLE MODE)
             </button>

@@ -11,7 +11,7 @@ import { PSEUDOCODE } from '../engine/pseudocodeData';
  */
 const PseudocodePanel = ({ algoType, activeLine, lineStatus = 'active' }) => {
   const lines = PSEUDOCODE[algoType] || [];
-  const [height, setHeight] = useState(180);
+  const [height, setHeight] = useState(140);
   const isDragging = useRef(false);
   const startY = useRef(0);
   const startH = useRef(0);

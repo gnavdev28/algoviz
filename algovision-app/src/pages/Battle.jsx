@@ -164,8 +164,8 @@ const Battle = () => {
     const isSearch = ALGORITHMS[algoKey].type === 'search';
 
     return (
-      <div className="flex-1 flex flex-col border-4 border-black dark:border-gray-800 bg-slate-50 dark:bg-gray-900 overflow-hidden relative group">
-        <div className="p-4 border-b-4 border-black dark:border-gray-800 bg-white dark:bg-gray-800 flex items-center justify-between">
+      <div className="flex-1 flex flex-col border-4 border-[var(--border-main)] bg-[var(--bg-secondary)] overflow-hidden relative group">
+        <div className="p-4 border-b-4 border-[var(--border-main)] bg-[var(--bg-primary)] flex items-center justify-between">
             <h3 className="font-black uppercase tracking-tighter text-lg flex items-center gap-2">
                 <Zap className="text-amber-500" size={20} />
                 {ALGORITHMS[algoKey].name}
@@ -226,29 +226,29 @@ const Battle = () => {
   }, [state1.isFinished, state2.isFinished, state1.totalTime, state2.totalTime]);
 
   return (
-    <div className="flex-1 flex flex-col overflow-hidden bg-white dark:bg-gray-950">
+    <div className="flex-1 flex flex-col overflow-hidden bg-[var(--bg-primary)]">
       {/* Nút bật/tắt trên thiết bị di động */}
-      <div className="md:hidden flex items-center justify-between p-3 border-b-2 border-black dark:border-gray-800 bg-slate-100 dark:bg-gray-900 z-50">
+      <div className="md:hidden flex items-center justify-between p-3 border-b-2 border-[var(--border-main)] bg-[var(--bg-secondary)] z-50">
         <div className="flex items-center gap-2">
            <SettingsIcon size={14} className="text-slate-500" />
            <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Bảng điều khiển</span>
         </div>
         <button 
           onClick={() => setIsControlsOpen(!isControlsOpen)}
-          className="p-1 border-2 border-black dark:border-gray-700 bg-white dark:bg-gray-800 shadow-[2px_2px_0_0_#000] dark:shadow-none transition-transform active:translate-y-0.5 active:shadow-none"
+          className="p-1 neu-border-sm bg-[var(--bg-primary)] shadow-[2px_2px_0_0_#000] dark:shadow-none transition-transform active:translate-y-0.5 active:shadow-none"
         >
           {isControlsOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </button>
       </div>
 
       {/* Bảng điều khiển trên cùng */}
-      <div className={`${isControlsOpen ? 'flex' : 'hidden md:flex'} p-4 border-b-4 border-black dark:border-gray-800 flex flex-wrap items-center gap-6 bg-slate-50 dark:bg-gray-900/50 transition-all duration-300`}>
+      <div className={`${isControlsOpen ? 'flex' : 'hidden md:flex'} p-4 border-b-4 border-[var(--border-main)] flex flex-wrap items-center gap-6 bg-[var(--bg-secondary)] transition-all duration-300`}>
         
         {/* Phân đoạn chọn loại đối đầu */}
-        <div className="flex bg-white dark:bg-gray-800 border-2 border-black dark:border-gray-700 p-1 rounded-sm">
+        <div className="flex bg-[var(--bg-primary)] border-2 border-[var(--border-main)] p-1 rounded-sm">
             <button 
                 onClick={() => handleTypeChange('sort')}
-                className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-widest transition-all ${battleType === 'sort' ? 'bg-black text-white dark:bg-white dark:text-black shadow-[2px_2px_0_0_#ccc] dark:shadow-[2px_2px_0_0_rgba(255,255,255,0.1)]' : 'hover:bg-slate-100 dark:hover:bg-gray-700 text-slate-500'}`}
+                className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-widest transition-all ${battleType === 'sort' ? 'bg-black text-white dark:bg-slate-700 dark:text-white shadow-[2px_2px_0_0_#ccc] dark:shadow-none' : 'hover:bg-slate-100 dark:hover:bg-gray-700 text-slate-500'}`}
             >
                 Sắp xếp
             </button>
