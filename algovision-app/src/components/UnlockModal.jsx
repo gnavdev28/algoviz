@@ -66,7 +66,7 @@ const UnlockModal = ({ isOpen, onClose, onUnlock, algoName }) => {
                   Xem Ads mở khóa (5s)
                 </button>
                 <button 
-                  onClick={() => onUnlock(algoName)}
+                  onClick={() => onUnlock('all')}
                   className="bg-indigo-600 hover:bg-indigo-700 text-white font-black py-4 border-b-4 border-indigo-900 active:border-b-0 active:translate-y-1 transition-all uppercase tracking-wide shadow-lg"
                 >
                   Nâng cấp VIP (99k)

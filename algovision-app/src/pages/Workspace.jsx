@@ -14,10 +14,12 @@ import UnlockModal from '../components/UnlockModal';
 import { ChevronDown, ChevronUp, Settings as SettingsIcon } from 'lucide-react';
 
 const Workspace = ({ initialModule }) => {
-  const [algoType, setAlgoType] = useState('bubble');
+  const [algoType, setAlgoType] = useState(() => {
+    if (initialModule === 'search') return 'linear';
+    if (initialModule === 'list') return 'linkedlist';
+    return 'bubble';
+  });
 
-  // Áp dụng pattern được khuyên dùng để cập nhật state trực tiếp khi render
-  // khi một prop thay đổi để tránh lỗi render lặp lại từ Effects.
   const [prevModule, setPrevModule] = useState(initialModule);
   if (initialModule !== prevModule) {
     setPrevModule(initialModule);
@@ -65,10 +67,15 @@ const Workspace = ({ initialModule }) => {
   };
 
   const unlockAlgo = (name) => {
-    const newList = [...unlockedAlgos, name];
+    let newList;
+    if (name === 'all') {
+      newList = [...new Set([...unlockedAlgos, ...premiumAlgos])];
+    } else {
+      newList = [...unlockedAlgos, name];
+    }
     setUnlockedAlgos(newList);
     localStorage.setItem('unlocked_algos', JSON.stringify(newList));
-    setAlgoType(name);
+    if (name !== 'all') setAlgoType(name);
     setUnlockModal({ isOpen: false, algo: '' });
   };
 
@@ -270,6 +277,12 @@ const Workspace = ({ initialModule }) => {
                   <option value="linkedlist">Singly Linked List</option>
                 </optgroup>
               </select>
+              <button 
+                onClick={() => { localStorage.removeItem('unlocked_algos'); window.location.reload(); }}
+                className="text-[9px] font-bold text-slate-400 dark:text-gray-600 hover:text-red-400 transition-colors uppercase mt-1.5 underline"
+              >
+                Test: reset lock
+              </button>
             </div>
 
             {!isLinkedList && (

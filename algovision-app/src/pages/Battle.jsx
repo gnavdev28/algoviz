@@ -47,11 +47,22 @@ const Battle = () => {
   };
 
   const unlockAlgo = (name) => {
-    const newList = [...unlockedAlgos, name];
+    let newList;
+    if (name === 'all') {
+      const allPremium = Object.entries(ALGORITHMS)
+        .filter(([, v]) => v.isPremium)
+        .map(([k]) => k);
+      newList = [...new Set([...unlockedAlgos, ...allPremium])];
+    } else {
+      newList = [...unlockedAlgos, name];
+    }
     setUnlockedAlgos(newList);
     localStorage.setItem('unlocked_algos', JSON.stringify(newList));
-    if (unlockModal.side === 'left') setAlgoLeft(name);
-    else setAlgoRight(name);
+    
+    if (name !== 'all') {
+      if (unlockModal.side === 'left') setAlgoLeft(name);
+      else setAlgoRight(name);
+    }
     setUnlockModal({ isOpen: false, algo: '', side: 'left' });
   };
 
@@ -306,6 +317,12 @@ const Battle = () => {
               </select>
            </div>
         </div>
+        <button 
+          onClick={() => { localStorage.removeItem('unlocked_algos'); window.location.reload(); }}
+          className="text-[9px] font-bold text-slate-400 dark:text-gray-600 hover:text-red-400 transition-colors uppercase underline"
+        >
+          Test: reset lock
+        </button>
 
         <div className="h-10 w-[1px] bg-slate-300 dark:bg-gray-700 mx-2 hidden md:block"></div>
 

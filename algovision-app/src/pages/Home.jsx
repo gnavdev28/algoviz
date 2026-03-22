@@ -39,13 +39,10 @@ const Home = ({ onNavigate }) => {
   return (
     <div className="flex-1 overflow-y-auto bg-[var(--bg-primary)] text-black dark:text-white pb-20 tracking-tight">
       <div className="max-w-6xl mx-auto px-6 pt-24 pb-12">
-        <div className="text-center space-y-8 mb-20">
+        <div className="text-center space-y-8 mb-12">
           <h1 className="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-none">
             Trực quan hóa<br/>Thuật toán.
           </h1>
-          <p className="inline-block text-sm uppercase tracking-[0.3em] font-black border-2 border-[var(--border-main)] px-4 py-2 opacity-80">
-            Học tập qua trải nghiệm thực tế
-          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
