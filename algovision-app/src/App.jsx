@@ -20,7 +20,7 @@ function App() {
       <Navbar currentPage={currentPage} onNavigate={handleNavigate} isDark={isDark} toggleTheme={toggleTheme} />
       <main className="flex-1 overflow-hidden flex flex-col relative">
         {currentPage === 'home' ? <Home onNavigate={handleNavigate} /> : 
-         currentPage === 'battle' ? <Battle /> : <Workspace initialModule={selectedModule} />}
+         currentPage === 'battle' ? <Battle /> : <Workspace key={selectedModule} initialModule={selectedModule} />}
       </main>
     </div>
   );

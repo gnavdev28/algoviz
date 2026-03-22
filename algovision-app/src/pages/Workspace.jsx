@@ -14,10 +14,12 @@ import UnlockModal from '../components/UnlockModal';
 import { ChevronDown, ChevronUp, Settings as SettingsIcon } from 'lucide-react';
 
 const Workspace = ({ initialModule }) => {
-  const [algoType, setAlgoType] = useState('bubble');
+  const [algoType, setAlgoType] = useState(() => {
+    if (initialModule === 'search') return 'linear';
+    if (initialModule === 'list') return 'linkedlist';
+    return 'bubble';
+  });
 
-  // Áp dụng pattern được khuyên dùng để cập nhật state trực tiếp khi render
-  // khi một prop thay đổi để tránh lỗi render lặp lại từ Effects.
   const [prevModule, setPrevModule] = useState(initialModule);
   if (initialModule !== prevModule) {
     setPrevModule(initialModule);
@@ -65,10 +67,15 @@ const Workspace = ({ initialModule }) => {
   };
 
   const unlockAlgo = (name) => {
-    const newList = [...unlockedAlgos, name];
+    let newList;
+    if (name === 'all') {
+      newList = [...new Set([...unlockedAlgos, ...premiumAlgos])];
+    } else {
+      newList = [...unlockedAlgos, name];
+    }
     setUnlockedAlgos(newList);
     localStorage.setItem('unlocked_algos', JSON.stringify(newList));
-    setAlgoType(name);
+    if (name !== 'all') setAlgoType(name);
     setUnlockModal({ isOpen: false, algo: '' });
   };
 
@@ -232,15 +239,15 @@ const Workspace = ({ initialModule }) => {
   const animTime = Math.max(20, 200 / speed);
 
   return (
-    <div className="flex-1 flex flex-col md:flex-row h-full overflow-hidden bg-white dark:bg-[#0d1117] text-black dark:text-white">
+    <div className="flex-1 flex flex-col md:flex-row h-full overflow-hidden bg-[var(--bg-primary)] text-black dark:text-white">
       {/* Điều khiển thanh bên */}
-      <div className={`${isControlsOpen ? 'h-auto md:h-full' : 'h-[60px] md:h-full'} w-full md:w-72 border-b-4 md:border-b-0 md:border-r-4 border-black dark:border-gray-800 flex flex-col shrink-0 overflow-y-auto bg-slate-50 dark:bg-[#161b22] transition-all duration-300`}>
-        <div className="p-5">
+      <div className={`${isControlsOpen ? 'h-auto md:h-full' : 'h-[50px] md:h-full'} w-full md:w-72 border-b-4 md:border-b-0 md:border-r-4 border-[var(--border-main)] flex flex-col shrink-0 overflow-y-auto bg-[var(--bg-secondary)] transition-all duration-300`}>
+        <div className="p-4 md:p-5">
           <div className="flex items-center justify-between mb-6 border-b-4 border-black dark:border-b dark:border-gray-700 pb-2">
             <h2 className="font-black text-xl uppercase tracking-tighter">BẢNG ĐIỀU KHIỂN</h2>
             <button 
               onClick={() => setIsControlsOpen(!isControlsOpen)}
-              className="md:hidden p-1 border-2 border-black dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-slate-100 dark:hover:bg-gray-700 transition-colors"
+              className="md:hidden p-1 neu-border-sm bg-[var(--bg-primary)] hover:bg-[var(--bg-secondary)] transition-colors"
             >
               {isControlsOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
             </button>
@@ -253,7 +260,7 @@ const Workspace = ({ initialModule }) => {
                 value={algoType}
                 onChange={(e) => handleAlgoSelect(e.target.value)}
                 disabled={isPlaying}
-                className="w-full bg-white dark:bg-gray-800/80 text-black dark:text-white border-4 border-black dark:border dark:border-gray-700 shadow-[4px_4px_0_0_#000] dark:shadow-none rounded-none dark:rounded-md py-3 px-3 text-xs font-bold uppercase cursor-pointer"
+                className="w-full bg-[var(--bg-primary)] text-black dark:text-white border-4 border-[var(--border-main)] shadow-[4px_4px_0_0_var(--border-main)] rounded-none py-3 px-3 text-xs font-bold uppercase cursor-pointer outline-none"
               >
                 <optgroup label="Sắp xếp">
                   <option value="bubble">Bubble Sort</option>
@@ -270,6 +277,12 @@ const Workspace = ({ initialModule }) => {
                   <option value="linkedlist">Singly Linked List</option>
                 </optgroup>
               </select>
+              <button 
+                onClick={() => { localStorage.removeItem('unlocked_algos'); window.location.reload(); }}
+                className="text-[9px] font-bold text-slate-400 dark:text-gray-600 hover:text-red-400 transition-colors uppercase mt-1.5 underline"
+              >
+                Test: reset lock
+              </button>
             </div>
 
             {!isLinkedList && (
@@ -295,9 +308,9 @@ const Workspace = ({ initialModule }) => {
                           value={inputSize}
                           onChange={(e) => { setInputSize(e.target.value); setInputError(''); }}
                           disabled={isPlaying}
-                          className="flex-1 border-4 border-black dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-xs font-bold outline-none"
+                          className="flex-1 neu-border-sm bg-[var(--bg-primary)] px-3 py-2 text-xs font-bold outline-none"
                         />
-                        <button onClick={handleApplySize} disabled={isPlaying} className="bg-black dark:bg-indigo-600 text-white px-4 py-2 text-[10px] font-black uppercase">Tạo</button>
+                        <button onClick={handleApplySize} disabled={isPlaying} className="bg-black dark:bg-indigo-600 text-white px-4 py-2 text-[10px] font-black uppercase neu-border-sm shadow-[2px_2px_0_0_var(--border-main)]">Tạo</button>
                       </div>
                     </div>
 
@@ -334,7 +347,7 @@ const Workspace = ({ initialModule }) => {
                     value={targetVal}
                     onChange={(e) => setTargetVal(e.target.value)}
                     disabled={isPlaying}
-                    className="w-full border-4 border-black dark:border dark:border-gray-700 bg-white dark:bg-gray-800/80 text-black dark:text-white px-3 py-2 text-xl font-black font-mono outline-none shadow-[4px_4px_0_0_#000] dark:shadow-none dark:rounded-md"
+                    className="w-full border-4 border-[var(--border-main)] bg-[var(--bg-primary)] text-[var(--text-main)] px-3 py-2 text-xl font-black font-mono outline-none shadow-[4px_4px_0_0_var(--border-main)]"
                   />
               </div>
             )}
@@ -384,9 +397,9 @@ const Workspace = ({ initialModule }) => {
           {!isLinkedList && (
              <div className="flex flex-col gap-4 mt-6 pt-6 border-t-4 border-black dark:border-t dark:border-gray-700">
                 {isPlaying ? (
-                  <button onClick={pause} className="uppercase tracking-widest text-sm font-black border-4 border-black dark:border dark:border-gray-600 shadow-[4px_4px_0_0_#000] dark:shadow-none bg-white dark:bg-gray-800 text-black dark:text-white py-4 hover:shadow-none hover:translate-y-1 transition-all dark:rounded-md">TẠM DỪNG</button>
+                  <button onClick={pause} className="uppercase tracking-widest text-sm font-black border-4 border-[var(--border-main)] shadow-[4px_4px_0_0_var(--border-main)] bg-[var(--bg-primary)] text-[var(--text-main)] py-4 hover:shadow-none hover:translate-y-1 transition-all">TẠM DỪNG</button>
                 ) : (
-                  <button onClick={play} className="uppercase tracking-widest text-sm font-black border-4 border-black dark:border dark:border-indigo-500 shadow-[6px_6px_0_0_#000] dark:shadow-lg dark:shadow-indigo-500/20 bg-black dark:bg-indigo-600 text-white py-4 hover:shadow-none hover:translate-y-1 dark:hover:bg-indigo-500 transition-all dark:rounded-md">BẮT ĐẦU CHẠY</button>
+                  <button onClick={play} className="uppercase tracking-widest text-sm font-black border-4 border-[var(--border-main)] shadow-[6px_6px_0_0_var(--border-main)] bg-black dark:bg-indigo-600 text-white py-4 hover:shadow-none hover:translate-y-1 transition-all">BẮT ĐẦU CHẠY</button>
                 )}
              </div>
           )}
@@ -395,9 +408,9 @@ const Workspace = ({ initialModule }) => {
       
       {/* Vùng hiển thị */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <div className="flex-1 flex flex-col min-w-0 p-6 pb-2 bg-white dark:bg-[#0d1117] relative overflow-auto pattern-grid">
+        <div className="flex-1 flex flex-col min-w-0 p-4 md:p-6 pb-2 bg-[var(--bg-primary)] relative overflow-auto pattern-grid min-h-[300px] md:min-h-0">
           {!isLinkedList && !isSearching && (
-            <div className="w-full max-w-5xl flex-1 relative mx-auto border-b-8 border-black dark:border-gray-600 pb-1 mt-auto">
+            <div className="w-full max-w-5xl flex-1 relative mx-auto border-b-8 border-black dark:border-gray-600 pb-1 mt-auto min-h-[160px] group">
               {baseArray.map((block) => {
                 const currentIdx = array.findIndex(x => x.id === block.id);
                 if (currentIdx === -1) return null;
@@ -407,35 +420,35 @@ const Workspace = ({ initialModule }) => {
                 const isAux = state.auxIndices?.includes(currentIdx);
                 const isSorted = state.sortedIndices.includes(currentIdx);
                 
-                let colorClass = "bg-blue-500 border-black dark:border-blue-400";
-                let transformClass = "";
-                
                 const isFullSorted = !isSearching && !isLinkedList && array.length > 5 && array.every((v, i, a) => i === 0 || v.val >= a[i-1].val);
-                if (state.isFinished || isSorted || state.pseudoLineStatus === 'success' || isFullSorted) {
-                    colorClass = "bg-emerald-500 border-black dark:border-emerald-400 shadow-[0_4px_10px_rgba(16,185,129,0.3)]";
-                } else {
-                    if (isAux) {
-                        transformClass = "-translate-y-8 md:-translate-y-16 scale-95";
-                        colorClass = "bg-purple-400 border-black dark:border-purple-300 shadow-[4px_8px_0_0_#000] dark:shadow-[4px_8px_0_0_rgba(0,0,0,0.5)] opacity-80 z-10";
-                    }
-                    
-                    if (isActive) {
-                        colorClass = isAux ? "bg-yellow-400 border-black dark:border-yellow-300 shadow-[8px_16px_0_0_#000] z-20 scale-100" : "bg-yellow-400 border-black dark:border-yellow-300 scale-105 shadow-xl z-20";
-                    }
-                    
-                    if (isSwapping) {
-                        colorClass = isAux ? "bg-red-500 border-black dark:border-red-400 shadow-[8px_16px_0_0_#000] z-30 scale-110" : "bg-red-500 border-black dark:border-red-400 scale-105 shadow-xl z-30";
-                    }
-                }
+
+                const barColor = (state.isFinished || isSorted || state.pseudoLineStatus === 'success' || isFullSorted) 
+                  ? '#10b981' // emerald-500
+                  : isSwapping ? '#ef4444' // red-500
+                  : isActive ? '#fbbf24' // amber-400
+                  : isAux ? '#c084fc' // purple-400
+                  : (document.documentElement.classList.contains('dark') ? '#2563eb' : '#3b82f6'); // blue-600/500
                 
-                const heightPercent = maxValue > 0 ? `${(block.val / maxValue) * 100}%` : '5%';
+                const heightPercent = maxValue > 0 ? `${(block.val / maxValue) * 90 + 5}%` : '5%';
                 const leftPercent = `calc(${(currentIdx / baseArray.length) * 100}% + 1px)`;
                 const widthPercent = `calc(${(1 / baseArray.length) * 100}% - 2px)`;
                 
                 return (
-                  <div key={block.id} className={`absolute bottom-0 ease-in-out ${colorClass} ${transformClass} flex flex-col justify-start items-center overflow-hidden border-4 z-10 box-border`}
-                    style={{ height: heightPercent, left: leftPercent, width: widthPercent, transitionProperty: "left, background-color, transform, box-shadow", transitionDuration: `${animTime}ms` }}>
-                    <span className="text-[12px] font-black mt-2 bg-black text-white px-1 leading-none z-10">{block.val}</span>
+                  <div key={block.id} className={`absolute bottom-0 ease-in-out transition-all rounded-t-sm border-t-2 border-black/20 dark:border-white/10 z-10 box-border`}
+                    style={{ 
+                      height: heightPercent, 
+                      left: leftPercent, 
+                      width: widthPercent, 
+                      background: `linear-gradient(to top, ${barColor}, ${barColor}cc)`,
+                      boxShadow: `0 0 15px ${barColor}44`,
+                      transform: isAux ? 'translateY(-40px) scale(0.95)' : 'none',
+                      opacity: isAux ? 0.8 : 1,
+                      transitionProperty: "left, background-color, transform, box-shadow, height", 
+                      transitionDuration: `${animTime}ms` 
+                    }}>
+                    <span className="absolute -top-7 left-1/2 -translate-x-1/2 text-[10px] font-black bg-black text-white px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 whitespace-nowrap">
+                        {block.val}
+                    </span>
                   </div>
                 );
               })}
