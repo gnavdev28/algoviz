@@ -41,12 +41,12 @@ export function* quickSort(initialArray) {
     }
 
     function* qs(low, high) {
-        yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: [], sortedIndices, pseudoLine: 1, isFinished: false };
         if (low < high) {
+            yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: [], sortedIndices, pseudoLine: 1, isFinished: false };
             let pi = yield* partition(low, high);
             
             // Xóa pivot khỏi vùng chưa hoàn thành, đánh dấu Đã Xong (Xanh)
-            sortedIndices.push(pi);
+            if (!sortedIndices.includes(pi)) sortedIndices.push(pi);
             yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: [], sortedIndices, pseudoLine: 5, isFinished: false };
 
             yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: [], sortedIndices, pseudoLine: 2, isFinished: false };
@@ -56,8 +56,10 @@ export function* quickSort(initialArray) {
             yield* qs(pi + 1, high);
         } else if (low === high) {
             // Phần tử cuối cùng là đơn nguyên nên đương nhiên đã xong
-            sortedIndices.push(low);
-            yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: [], sortedIndices, pseudoLine: 11, isFinished: false };
+            if (!sortedIndices.includes(low)) {
+                sortedIndices.push(low);
+                yield { array: [...arr], activeIndices: [], swapIndices: [], auxIndices: [], sortedIndices, pseudoLine: 11, isFinished: false };
+            }
         }
     }
 

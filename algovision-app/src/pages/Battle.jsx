@@ -164,6 +164,7 @@ const Battle = () => {
     if (state.sortedIndices.includes(idx)) return '#10b981';
     if (state.swapIndices.includes(idx)) return '#ef4444'; // red-500
     if (state.activeIndices.includes(idx)) return '#fbbf24'; // amber-400
+    if (state.auxIndices?.includes(idx)) return '#c084fc'; // purple-400
     if (state.foundIndex === idx) return '#10b981';
     
     // Màu xanh mặc định
@@ -198,6 +199,7 @@ const Battle = () => {
           {array.map((item, idx) => {
             const barHeight = (item.val / (maxValue || 1)) * 90 + 5;
             const barColor = getBarColorInHex(idx, state, algoKey, array);
+            const isAux = state.auxIndices?.includes(idx);
             return (
               <div
                 key={item.id}
@@ -207,6 +209,9 @@ const Battle = () => {
                   width: `${Math.floor(92 / array.length)}%`,
                   background: `linear-gradient(to top, ${barColor}, ${barColor}cc)`,
                   boxShadow: `0 0 10px ${barColor}33`,
+                  transform: isAux ? 'translateY(-40px) scale(0.95)' : 'none',
+                  opacity: isAux ? 0.8 : 1,
+                  transitionProperty: "height, left, background-color, transform, box-shadow",
                 }}
               >
                 <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-black opacity-0 group-hover:opacity-100 transition-opacity bg-black text-white px-1 rounded pointer-events-none">
